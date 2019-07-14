@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import CoreGraphics
 
 class ViewController: UIViewController {
     
@@ -16,6 +17,7 @@ class ViewController: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
     var viewImage: CGImage?
+    var noBlue: UIImage?
     
     let dataOutputQueue = DispatchQueue(label: "video data queue",
                                         qos: .userInitiated,
@@ -29,7 +31,22 @@ class ViewController: UIViewController {
             print(camPreview.getPixelColorAtPoint(point: touchLocation, sourceView: camPreview))
             
             if viewImage != nil{
-                print(viewImage!.pixelData())
+                print ("There is a viewImage")
+                noBlue = imageFromRGBA32Bitmap(pixels: viewImage!.pixelData()!, width: (1242*4), height: 1656)
+
+                if noBlue != nil {
+                    print("Blue will be shown")
+                    let previewImageView = UIImageView(image: noBlue)
+                    view.addSubview(previewImageView)
+
+                    //            DispatchQueue.main.async { [weak self] in
+                    //                self?.camPreview.image = self!.noBlue
+                    //}
+                }
+                else {
+                    print("There is no Blue")
+                }
+
             } else {
                 print("UIImage is empty")
             }
@@ -38,28 +55,15 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        func setupPreview() {
-//            // Configure previewLayer
-//            previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-//            previewLayer.frame = camPreview.bounds
-//            previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
-//            view.layer.addSublayer(previewLayer)
-//        }
-//
-//        if setupSession() {
-//            setupPreview()
-//        }
+    
         if setupSession() {
           captureSession.startRunning()
         }
-        
         
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(sender:)))
         tap.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(tap)
     }
-
 }
 
 extension ViewController {
@@ -154,12 +158,11 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         viewImage = convertCIImageToCGImage(inputImage: previewImage)
         
         let displayImage = UIImage(ciImage: previewImage)
-        DispatchQueue.main.async { [weak self] in
+            DispatchQueue.main.async { [weak self] in
             self?.camPreview.image = displayImage
-            
+                }
         }
     }
-}
 
 extension UIImageView {
     func getPixelColorAtPoint(point: CGPoint, sourceView: UIImageView) -> UIColor {
@@ -183,7 +186,7 @@ extension UIImageView {
 }
 
 extension CGImage {
-    func pixelData() { //}-> [UInt8]? {
+    func pixelData() -> [UInt8]? {
         let dataSize = self.width * self.height * 4
         var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -196,76 +199,92 @@ extension CGImage {
                                 bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
         //guard let cgImage = self.cgImage else { return nil }
         context?.draw(self, in: CGRect(x: 0, y: 0, width: self.width, height: self.height))
-        print (pixelData.prefix(5))
+        
+        for i in stride(from: pixelData.index(after: 1), to: pixelData.endIndex, by: 4){
+            pixelData[i] = 255 // the 255 replaces index 2 which is blue
+        }
         print ("Width: \(self.width), Height: \(self.height)")
-        //return pixelData
+        print ((pixelData.prefix(12)))
+        
+        return (pixelData)
     }
 }
 
-extension CGImage {
+//extension ViewController {
+//    func imageFromRGBA32Bitmap(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
+//        guard width > 0 && height > 0 else { return nil }
+//        guard pixels.count == width * height else { return nil }
+//
+//        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+//        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+//        let bitsPerComponent = 8
+//        let bitsPerPixel = 32
+//
+//        var data = pixels // Copy to mutable []
+//        guard let providerRef = CGDataProvider(data: NSData(bytes: &data,
+//                                                            length: data.count * 4)
+//            )
+//            else { return nil }
+//
+//        guard let cgim = CGImage(
+//            width: width,
+//            height: height,
+//            bitsPerComponent: bitsPerComponent,
+//            bitsPerPixel: bitsPerPixel,
+//            bytesPerRow: width * 4,
+//            space: rgbColorSpace,
+//            bitmapInfo: bitmapInfo,
+//            provider: providerRef,
+//            decode: nil,
+//            shouldInterpolate: true,
+//            intent: .defaultIntent
+//            )
+//            else { return nil }
+//
+//        print ("Blue has been made")
+//        return UIImage(cgImage: cgim)
+//
+//    }
+//
+//}
+
+
+extension ViewController {
     
-    func pixelValues(fromCGImage imageRef: CGImage?) -> (pixelValues: [UInt8]?, width: Int, height: Int)
-    {
-        var width = 0
-        var height = 0
-        var pixelValues: [UInt8]?
-        if let imageRef = imageRef {
-            width = imageRef.width
-            height = imageRef.height
-            let bitsPerComponent = imageRef.bitsPerComponent
-            let bytesPerRow = imageRef.bytesPerRow
-            let totalBytes = height * bytesPerRow
-            
-            let colorSpace = CGColorSpaceCreateDeviceGray()
-            var intensities = [UInt8](repeating: 0, count: totalBytes)
-            
-            let contextRef = CGContext(data: &intensities, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: 0)
-            contextRef?.draw(imageRef, in: CGRect(x: 0.0, y: 0.0, width: CGFloat(width), height: CGFloat(height)))
-            
-            pixelValues = intensities
-        }
+    
+    func imageFromRGBA32Bitmap(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
+        guard width > 0 && height > 0 else { return nil }
+        guard pixels.count == width * height else { return nil }
         
-        return (pixelValues, width, height)
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let bitsPerComponent = 8
+        let bitsPerPixel = 32
+        
+        var data = pixels // Copy to mutable []
+        guard let providerRef = CGDataProvider(data: NSData(bytes: &data,
+                                                            length: data.count * 4)
+            )
+            else { return nil }
+        
+        guard let cgim = CGImage(
+            width: width,
+            height: height,
+            bitsPerComponent: bitsPerComponent,
+            bitsPerPixel: bitsPerPixel,
+            bytesPerRow: width * 4,
+            space: rgbColorSpace,
+            bitmapInfo: bitmapInfo,
+            provider: providerRef,
+            decode: nil,
+            shouldInterpolate: true,
+            intent: .defaultIntent
+            )
+            else { return nil }
+        
+        print ("Blue has been made")
+        return UIImage(cgImage: cgim)
+        
     }
     
-    func image(fromPixelValues pixelValues: [UInt8]?, width: Int, height: Int) -> CGImage?
-    {
-        var imageRef: CGImage?
-        if var pixelValues = pixelValues {
-            let bitsPerComponent = 8
-            let bytesPerPixel = 1
-            let bitsPerPixel = bytesPerPixel * bitsPerComponent
-            let bytesPerRow = bytesPerPixel * width
-            let totalBytes = height * bytesPerRow
-            
-            imageRef = withUnsafePointer(to: &pixelValues, {
-                ptr -> CGImage? in
-                var imageRef: CGImage?
-                let colorSpaceRef = CGColorSpaceCreateDeviceGray()
-                let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue).union(CGBitmapInfo())
-                let data = UnsafeRawPointer(ptr.pointee).assumingMemoryBound(to: UInt8.self)
-                let releaseData: CGDataProviderReleaseDataCallback = {
-                    (info: UnsafeMutableRawPointer?, data: UnsafeRawPointer, size: Int) -> () in
-                }
-                
-                if let providerRef = CGDataProvider(dataInfo: nil, data: data, size: totalBytes, releaseData: releaseData) {
-                    imageRef = CGImage(width: width,
-                                       height: height,
-                                       bitsPerComponent: bitsPerComponent,
-                                       bitsPerPixel: bitsPerPixel,
-                                       bytesPerRow: bytesPerRow,
-                                       space: colorSpaceRef,
-                                       bitmapInfo: bitmapInfo,
-                                       provider: providerRef,
-                                       decode: nil,
-                                       shouldInterpolate: false,
-                                       intent: CGColorRenderingIntent.defaultIntent)
-                }
-                
-                return imageRef
-            })
-        }
-        
-        return imageRef
-    }
 }
