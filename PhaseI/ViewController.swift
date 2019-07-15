@@ -19,6 +19,7 @@ class ViewController: UIViewController {
     var viewImage: CGImage?
     var noBlue: UIImage?
     
+    
     let dataOutputQueue = DispatchQueue(label: "video data queue",
                                         qos: .userInitiated,
                                         attributes: [],
@@ -32,19 +33,23 @@ class ViewController: UIViewController {
             
             if viewImage != nil{
                 print ("There is a viewImage")
-                noBlue = imageFromRGBA32Bitmap(pixels: viewImage!.pixelData()!, width: (1242*4), height: 1656)
-
+                //noBlue = makingBlue(pixels: viewImage!.pixelData()!, width: (1242*4), height: 1656)
+                //noBlue = imageFromRGBA32Bitmap(pixels: viewImage!.pixelData()!, width: (1242*4), height: 1656)
+                
+                
                 if noBlue != nil {
-                    print("Blue will be shown")
-                    let previewImageView = UIImageView(image: noBlue)
-                    view.addSubview(previewImageView)
-
-                    //            DispatchQueue.main.async { [weak self] in
-                    //                self?.camPreview.image = self!.noBlue
-                    //}
-                }
-                else {
-                    print("There is no Blue")
+                    print("Blue image should show")
+                    self.camPreview.image = noBlue
+                    
+//                    let previewImageView = UIImageView(image: noBlue)
+//
+//                    view.addSubview(previewImageView)
+//                    previewImageView.frame = camPreview.frame
+//
+//                                DispatchQueue.main.async { [weak self] in
+//                                    self?.camPreview.image = self!.noBlue }
+                    } else {
+                    print("There is no Blue image")
                 }
 
             } else {
@@ -158,8 +163,11 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         viewImage = convertCIImageToCGImage(inputImage: previewImage)
         
         let displayImage = UIImage(ciImage: previewImage)
+        
+        noBlue = processByPixel(in: viewImage!)
+        
             DispatchQueue.main.async { [weak self] in
-            self?.camPreview.image = displayImage
+                self?.camPreview.image = self?.noBlue
                 }
         }
     }
@@ -204,11 +212,12 @@ extension CGImage {
             pixelData[i] = 255 // the 255 replaces index 2 which is blue
         }
         print ("Width: \(self.width), Height: \(self.height)")
-        print ((pixelData.prefix(12)))
+        print ("Pixel Data: \(pixelData.prefix(12))")
         
         return (pixelData)
     }
 }
+
 
 //extension ViewController {
 //    func imageFromRGBA32Bitmap(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
@@ -221,10 +230,10 @@ extension CGImage {
 //        let bitsPerPixel = 32
 //
 //        var data = pixels // Copy to mutable []
-//        guard let providerRef = CGDataProvider(data: NSData(bytes: &data,
-//                                                            length: data.count * 4)
+//        guard let providerRef = CGDataProvider(data: NSData(bytes: &data, length: data.count * 4)
 //            )
 //            else { return nil }
+//
 //
 //        guard let cgim = CGImage(
 //            width: width,
@@ -236,55 +245,133 @@ extension CGImage {
 //            bitmapInfo: bitmapInfo,
 //            provider: providerRef,
 //            decode: nil,
-//            shouldInterpolate: true,
+//            shouldInterpolate: false,
 //            intent: .defaultIntent
 //            )
 //            else { return nil }
 //
 //        print ("Blue has been made")
-//        return UIImage(cgImage: cgim)
 //
+//        noBlue = UIImage(cgImage: cgim)
+//        return noBlue
 //    }
 //
 //}
 
+//extension ViewController {
+//    func makingBlue(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
+//        //let dataSize = width * height * 4
+//        //var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
+//        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+//        let context = CGContext(data: nil,
+//                                width: width,
+//                                height: height,
+//                                bitsPerComponent: 8,
+//                                bytesPerRow: 4 * width,
+//                                space: CGColorSpaceCreateDeviceRGB(),
+//                                bitmapInfo: bitmapInfo.rawValue)
+//
+//        let blueImage = context!.makeImage()
+//
+//        if blueImage != nil {
+//            print("Blue image made: \(pixels.prefix(12))")
+//        }
+//        return UIImage(cgImage: blueImage!)
+//    }
+//}
 
 extension ViewController {
-    
-    
-    func imageFromRGBA32Bitmap(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
-        guard width > 0 && height > 0 else { return nil }
-        guard pixels.count == width * height else { return nil }
+    func processByPixel(in image: CGImage?) -> UIImage? {
         
-        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        guard let inputCGImage = image else { print("unable to get cgImage"); return nil }
+        let colorSpace       = CGColorSpaceCreateDeviceRGB()
+        let width            = inputCGImage.width
+        let height           = inputCGImage.height
+        let bytesPerPixel    = 4
         let bitsPerComponent = 8
-        let bitsPerPixel = 32
+        let bytesPerRow      = bytesPerPixel * width
+        let bitmapInfo       = RGBA32.bitmapInfo
         
-        var data = pixels // Copy to mutable []
-        guard let providerRef = CGDataProvider(data: NSData(bytes: &data,
-                                                            length: data.count * 4)
-            )
-            else { return nil }
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
+            print("Cannot create context!"); return nil
+        }
+        context.draw(inputCGImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
-        guard let cgim = CGImage(
-            width: width,
-            height: height,
-            bitsPerComponent: bitsPerComponent,
-            bitsPerPixel: bitsPerPixel,
-            bytesPerRow: width * 4,
-            space: rgbColorSpace,
-            bitmapInfo: bitmapInfo,
-            provider: providerRef,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: .defaultIntent
-            )
-            else { return nil }
+        guard let buffer = context.data else { print("Cannot get context data!"); return nil }
         
-        print ("Blue has been made")
-        return UIImage(cgImage: cgim)
+        let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
         
+//        for row in 0 ..< Int(height) {
+//            for column in 0 ..< Int(width) {
+//                let offset = row * width + column
+//                /*
+//                 * Here I'm looking for color : RGBA32(red: 231, green: 239, blue: 247, alpha: 255)
+//                 * and I will convert pixels color that in range of above color to transparent
+//                 * so comparetion can done like this (pixelColorRedComp >= ourColorRedComp - 1 && pixelColorRedComp <= ourColorRedComp + 1 && green && blue)
+//                 */
+//
+////                if pixelBuffer[offset].redComponent >=  230 && pixelBuffer[offset].redComponent <=  232 &&
+////                    pixelBuffer[offset].greenComponent >=  238 && pixelBuffer[offset].greenComponent <=  240 &&
+////                    pixelBuffer[offset].blueComponent >= 246 && pixelBuffer[offset].blueComponent <= 248 &&
+////                    pixelBuffer[offset].alphaComponent == 255 {
+////                    print (pixelBuffer[offset].redComponent, pixelBuffer[offset].greenComponent, pixelBuffer[offset].blueComponent,pixelBuffer[offset].alphaComponent)
+////                }
+        // }
+                for row in 0 ..< Int(height) {
+                    for column in 0 ..< Int(width) {
+                        let offset = row * width + column
+                        if pixelBuffer[offset].blueComponent != 255 {
+                            pixelBuffer[offset] = .blue
+                        }
+                    }
+                }
+        
+        let outputCGImage = context.makeImage()!
+        let outputImage = UIImage(cgImage: outputCGImage)
+
+        return outputImage
     }
     
+    struct RGBA32: Equatable {
+        private var color: UInt32
+        
+        var redComponent: UInt8 {
+            return UInt8((color >> 24) & 255)
+        }
+        
+        var greenComponent: UInt8 {
+            return UInt8((color >> 16) & 255)
+        }
+        
+        var blueComponent: UInt8 {
+            return UInt8((color >> 8) & 255)
+        }
+        
+        var alphaComponent: UInt8 {
+            return UInt8((color >> 0) & 255)
+        }
+        
+        init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
+            let red   = UInt32(red)
+            let green = UInt32(green)
+            let blue  = UInt32(blue)
+            let alpha = UInt32(alpha)
+            color = (red << 24) | (green << 16) | (blue << 8) | (alpha << 0)
+        }
+        
+        static let red     = RGBA32(red: 255, green: 0,   blue: 0,   alpha: 255)
+        static let green   = RGBA32(red: 0,   green: 255, blue: 0,   alpha: 255)
+        static let blue    = RGBA32(red: 0,   green: 0,   blue: 255, alpha: 255)
+        static let white   = RGBA32(red: 255, green: 255, blue: 255, alpha: 255)
+        static let black   = RGBA32(red: 0,   green: 0,   blue: 0,   alpha: 255)
+        static let magenta = RGBA32(red: 255, green: 0,   blue: 255, alpha: 255)
+        static let yellow  = RGBA32(red: 255, green: 255, blue: 0,   alpha: 255)
+        static let cyan    = RGBA32(red: 0,   green: 255, blue: 255, alpha: 255)
+        
+        static let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+        
+        static func ==(lhs: RGBA32, rhs: RGBA32) -> Bool {
+            return lhs.color == rhs.color
+        }
+    }
 }
