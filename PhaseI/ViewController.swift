@@ -9,6 +9,11 @@
 import UIKit
 import AVFoundation
 import CoreGraphics
+import AVKit
+import Vision
+import VideoToolbox
+import CoreML
+
 
 class ViewController: UIViewController {
     
@@ -17,13 +22,32 @@ class ViewController: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer!
     var activeInput: AVCaptureDeviceInput!
     var viewImage: CGImage?
-    var noBlue: UIImage?
+    var modifiedImage: UIImage?
     
+    let model = MobileOpenPose()
+    let ImageWidth = 368//224
+    let ImageHeight = 368 //224
     
     let dataOutputQueue = DispatchQueue(label: "video data queue",
                                         qos: .userInitiated,
                                         attributes: [],
                                         autoreleaseFrequency: .workItem)
+    
+    let identifierLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .white
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    fileprivate func setupIdentifierConfidenceLabel() {
+        view.addSubview(identifierLabel)
+        identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32).isActive = true
+        identifierLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        identifierLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        identifierLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
     
     @objc func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
@@ -32,32 +56,40 @@ class ViewController: UIViewController {
             print(camPreview.getPixelColorAtPoint(point: touchLocation, sourceView: camPreview))
             
             if viewImage != nil{
-                print ("There is a viewImage")
-                //noBlue = makingBlue(pixels: viewImage!.pixelData()!, width: (1242*4), height: 1656)
-                //noBlue = imageFromRGBA32Bitmap(pixels: viewImage!.pixelData()!, width: (1242*4), height: 1656)
-                
-                
-                if noBlue != nil {
-                    print("Blue image should show")
-                    self.camPreview.image = noBlue
-                    
-//                    let previewImageView = UIImageView(image: noBlue)
-//
-//                    view.addSubview(previewImageView)
-//                    previewImageView.frame = camPreview.frame
-//
-//                                DispatchQueue.main.async { [weak self] in
-//                                    self?.camPreview.image = self!.noBlue }
-                    } else {
-                    print("There is no Blue image")
-                }
-
+                print ("UIImage processed")
+                viewImage!.pixelData()
+                runCoreML(modifiedImage!)
             } else {
                 print("UIImage is empty")
             }
         }
     }
-
+    
+    func convertCIImageToCGImage(inputImage: CIImage) -> CGImage? {
+        let context = CIContext(options: nil)
+        if let cgImage = context.createCGImage(inputImage, from: inputImage.extent) {
+            return cgImage
+        }
+        return nil
+    }
+    
+    func measure <T> (_ f: @autoclosure () -> T) -> (result: T, duration: String) {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        let result = f()
+        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        return (result, "Elapsed time is \(timeElapsed) seconds.")
+    }
+    
+    lazy var classificationRequest: [VNRequest] = {
+        do {
+            let model = try VNCoreMLModel(for: self.model.model)
+            let classificationRequest = VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
+            return [ classificationRequest ]
+        } catch {
+            fatalError("Can't load Vision ML model: \(error)")
+        }
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -68,14 +100,17 @@ class ViewController: UIViewController {
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(sender:)))
         tap.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(tap)
+        
+        setupIdentifierConfidenceLabel()
+        
+        print("\(OpenCVWrapper.openCVVersionString())")
     }
 }
 
+// MARK: - Camera Setup
 extension ViewController {
     func setupSession() -> Bool {
-        //captureSession.sessionPreset = AVCaptureSession.Preset.high
-        
-        // Setup Camera
+        // setup Camera
         guard let camera = AVCaptureDevice.default(.builtInDualCamera, for: AVMediaType.video, position: .back) else { fatalError("No Depth Camera")}
         
         captureSession.sessionPreset = .photo
@@ -91,7 +126,7 @@ extension ViewController {
             print("Error setting device video input: \(error)")
             return false
         }
-        // 2.setup output
+        // 2 setup output
         let output = AVCaptureVideoDataOutput()
         output.setSampleBufferDelegate(self, queue: dataOutputQueue)
         output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
@@ -107,20 +142,19 @@ extension ViewController {
         do {
             try camera.lockForConfiguration()
             
-            // 4 Set minimum frame duration to be equal to teh supported frame rate of the depth data
+            // 4 set minimum frame duration to be equal to the supported frame rate of the depth data
             if let frameDuration = camera.activeDepthDataFormat?
                 .videoSupportedFrameRateRanges.first?.minFrameDuration {
                 camera.activeVideoMinFrameDuration = frameDuration
             }
             
-            // 5 Unlock Configuration
+            // 5 unlock configuration
             camera.unlockForConfiguration()
         } catch {
             fatalError(error.localizedDescription)
         }
         return true
     }
-        
     
     func currentVideoOrientation() -> AVCaptureVideoOrientation {
         var orientation: AVCaptureVideoOrientation
@@ -139,6 +173,7 @@ extension ViewController {
     }
 }
 
+// MARK: - Camera Output
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput,
@@ -152,32 +187,150 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let previewImage: CIImage
         previewImage = image
         
-        
-        func convertCIImageToCGImage(inputImage: CIImage) -> CGImage? {
-            let context = CIContext(options: nil)
-            if let cgImage = context.createCGImage(inputImage, from: inputImage.extent) {
-                return cgImage
-            }
-            return nil
-        }
         viewImage = convertCIImageToCGImage(inputImage: previewImage)
+        modifiedImage = processByPixel(in: viewImage!)
         
-        let displayImage = UIImage(ciImage: previewImage)
+        // MARK: - Properties of Image Input for model
         
-        noBlue = processByPixel(in: viewImage!)
+//        let request = VNCoreMLRequest(model: model) { (finishedReq, err) in
+//
+//            guard let results = finishedReq.results as? [VNClassificationObservation] else { return }
+//
+//            guard let firstObservation = results.first else { return }
+//
+//            print(firstObservation.identifier, firstObservation.confidence)
+//
+//            DispatchQueue.main.async {
+//                self.identifierLabel.text = "\(firstObservation.identifier) \(firstObservation.confidence * 100)"
+//            }
+//        }
+        
+//        let modifiedpixelBuffer = modifiedImage!.pixelBuffer(width: ImageWidth, height: ImageHeight)
+//        runCoreML(modifiedpixelBuffer!)
+        //try? VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:]).perform([request])
         
             DispatchQueue.main.async { [weak self] in
-                self?.camPreview.image = self?.noBlue
+                self?.camPreview.image = self?.modifiedImage
                 }
         }
     }
 
+extension ViewController {
+    
+    func handleClassification(request: VNRequest, error: Error?) {
+        
+        guard let observations = request.results as? [VNCoreMLFeatureValueObservation] else { fatalError() }
+        let mlarray = observations[0].featureValue.multiArrayValue!
+        let length = mlarray.count
+        let doublePtr =  mlarray.dataPointer.bindMemory(to: Double.self, capacity: length)
+        let doubleBuffer = UnsafeBufferPointer(start: doublePtr, count: length)
+        let mm = Array(doubleBuffer)
+        // Draw new lines
+        drawLine(mm)
+    }
+    
+//    func runCoreML(_ pixelBuffer: CVPixelBuffer) {
+//        let model = MobileOpenPose()
+//        let startTime = CFAbsoluteTimeGetCurrent()
+//        if let prediction = try? model.prediction(image: pixelBuffer) {
+//
+//                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+//                print("coreml elapsed for \(timeElapsed) seconds")
+//
+//                let predictionOutput = prediction.net_output
+//                let length = predictionOutput.count
+//                print(predictionOutput)
+//
+//        }
+//    }
+    
+    func runCoreML(_ image: UIImage) {
+        camPreview.image = image
+        
+        //let img = image.resize(to: CGSize(width: ImageWidth,height: ImageHeight)).cgImage!
+        let modifiedpixelBuffer = image.pixelBuffer(width: ImageWidth, height: ImageHeight)
+        let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:])
+        do {
+            try classifierRequestHandler.perform(self.classificationRequest)
+        } catch {
+            print(error)
+        }
+        
+       
+    }
+    
+    func drawLine(_ mm: Array<Double>){
+        
+        let com = PoseEstimator(ImageWidth,ImageHeight)
+        
+        let res = measure(com.estimate(mm))
+        let humans = res.result;
+        print("estimate \(res.duration)")
+        
+        var keypoint = [Int32]()
+        var pos = [CGPoint]()
+        for human in humans {
+            var centers = [Int: CGPoint]()
+            for i in 0...CocoPart.Background.rawValue {
+                if human.bodyParts.keys.firstIndex(of: i) == nil {
+                    continue
+                }
+                let bodyPart = human.bodyParts[i]!
+                centers[i] = CGPoint(x: bodyPart.x, y: bodyPart.y)
+                //                centers[i] = CGPoint(x: Int(bodyPart.x * CGFloat(imageW) + 0.5), y: Int(bodyPart.y * CGFloat(imageH) + 0.5))
+            }
+            
+            for (pairOrder, (pair1,pair2)) in CocoPairsRender.enumerated() {
+                
+                if human.bodyParts.keys.firstIndex(of: pair1) == nil || human.bodyParts.keys.firstIndex(of: pair2) == nil {
+                    continue
+                }
+                if centers.index(forKey: pair1) != nil && centers.index(forKey: pair2) != nil{
+                    keypoint.append(Int32(pairOrder))
+                    pos.append(centers[pair1]!)
+                    pos.append(centers[pair2]!)
+                    //                    addLine(fromPoint: centers[pair1]!, toPoint: centers[pair2]!, color: CocoColors[pairOrder])
+                }
+            }
+        }
+        let opencv = OpenCVWrapper()
+        let layer = CALayer()
+        let uiImage = opencv.renderKeyPoint(camPreview.bounds, keypoint: &keypoint, keypoint_size: Int32(keypoint.count), pos: &pos)
+        
+        layer.frame = camPreview.bounds
+        layer.contents = uiImage.cgImage
+        layer.opacity = 0.6
+        layer.masksToBounds = true
+        self.view.layer.addSublayer(layer)
+        
+    }
+    
+    func addLine(fromPoint start: CGPoint, toPoint end:CGPoint, color: UIColor) {
+        let line = CAShapeLayer()
+        let linePath = UIBezierPath()
+        linePath.move(to: start)
+        linePath.addLine(to: end)
+        line.path = linePath.cgPath
+        line.strokeColor = color.cgColor
+        line.lineWidth = 3
+        line.lineJoin = CAShapeLayerLineJoin.round
+        self.view.layer.addSublayer(line)
+    }
+}
+
+// MARK: - Tap function to retrieve pixel information at a certain point
 extension UIImageView {
     func getPixelColorAtPoint(point: CGPoint, sourceView: UIImageView) -> UIColor {
         let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        let context = CGContext(data: pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)
+        let context = CGContext(data: pixel,
+                                width: 1,
+                                height: 1,
+                                bitsPerComponent: 8,
+                                bytesPerRow: 4,
+                                space: colorSpace,
+                                bitmapInfo: bitmapInfo.rawValue)
         
         context!.translateBy(x: -point.x, y: -point.y)
         
@@ -189,12 +342,13 @@ extension UIImageView {
                                      alpha: CGFloat(pixel[3])/255.0)
         
         pixel.deallocate()
-    return color
-}
+        return color
+    }
 }
 
+// MARK: - Function to output pixel data
 extension CGImage {
-    func pixelData() -> [UInt8]? {
+    func pixelData() { //}-> [UInt8]? {
         let dataSize = self.width * self.height * 4
         var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
         let colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -205,81 +359,30 @@ extension CGImage {
                                 bytesPerRow: 4 * Int(self.width),
                                 space: colorSpace,
                                 bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-        //guard let cgImage = self.cgImage else { return nil }
         context?.draw(self, in: CGRect(x: 0, y: 0, width: self.width, height: self.height))
-        
+
         for i in stride(from: pixelData.index(after: 1), to: pixelData.endIndex, by: 4){
             pixelData[i] = 255 // the 255 replaces index 2 which is blue
         }
         print ("Width: \(self.width), Height: \(self.height)")
         print ("Pixel Data: \(pixelData.prefix(12))")
-        
-        return (pixelData)
+
+        //return (pixelData)
     }
 }
 
+extension UIImage {
+    func resize(to newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: newSize.width, height: newSize.height), true, 1.0)
+        self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        return resizedImage
+    }
+}
 
-//extension ViewController {
-//    func imageFromRGBA32Bitmap(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
-//        guard width > 0 && height > 0 else { return nil }
-//        guard pixels.count == width * height else { return nil }
-//
-//        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
-//        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-//        let bitsPerComponent = 8
-//        let bitsPerPixel = 32
-//
-//        var data = pixels // Copy to mutable []
-//        guard let providerRef = CGDataProvider(data: NSData(bytes: &data, length: data.count * 4)
-//            )
-//            else { return nil }
-//
-//
-//        guard let cgim = CGImage(
-//            width: width,
-//            height: height,
-//            bitsPerComponent: bitsPerComponent,
-//            bitsPerPixel: bitsPerPixel,
-//            bytesPerRow: width * 4,
-//            space: rgbColorSpace,
-//            bitmapInfo: bitmapInfo,
-//            provider: providerRef,
-//            decode: nil,
-//            shouldInterpolate: false,
-//            intent: .defaultIntent
-//            )
-//            else { return nil }
-//
-//        print ("Blue has been made")
-//
-//        noBlue = UIImage(cgImage: cgim)
-//        return noBlue
-//    }
-//
-//}
-
-//extension ViewController {
-//    func makingBlue(pixels: [UInt8], width: Int, height: Int) -> UIImage? {
-//        //let dataSize = width * height * 4
-//        //var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
-//        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-//        let context = CGContext(data: nil,
-//                                width: width,
-//                                height: height,
-//                                bitsPerComponent: 8,
-//                                bytesPerRow: 4 * width,
-//                                space: CGColorSpaceCreateDeviceRGB(),
-//                                bitmapInfo: bitmapInfo.rawValue)
-//
-//        let blueImage = context!.makeImage()
-//
-//        if blueImage != nil {
-//            print("Blue image made: \(pixels.prefix(12))")
-//        }
-//        return UIImage(cgImage: blueImage!)
-//    }
-//}
-
+// MARK: - Function to input camera CGImage, modify, and output UIImage
 extension ViewController {
     func processByPixel(in image: CGImage?) -> UIImage? {
         
@@ -292,36 +395,29 @@ extension ViewController {
         let bytesPerRow      = bytesPerPixel * width
         let bitmapInfo       = RGBA32.bitmapInfo
         
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo) else {
+        guard let context = CGContext(data: nil,
+                                      width: width,
+                                      height: height,
+                                      bitsPerComponent: bitsPerComponent,
+                                      bytesPerRow: bytesPerRow,
+                                      space: colorSpace,
+                                      bitmapInfo: bitmapInfo)
+            else {
             print("Cannot create context!"); return nil
         }
+        
         context.draw(inputCGImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         guard let buffer = context.data else { print("Cannot get context data!"); return nil }
         
         let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
         
-//        for row in 0 ..< Int(height) {
-//            for column in 0 ..< Int(width) {
-//                let offset = row * width + column
-//                /*
-//                 * Here I'm looking for color : RGBA32(red: 231, green: 239, blue: 247, alpha: 255)
-//                 * and I will convert pixels color that in range of above color to transparent
-//                 * so comparetion can done like this (pixelColorRedComp >= ourColorRedComp - 1 && pixelColorRedComp <= ourColorRedComp + 1 && green && blue)
-//                 */
-//
-////                if pixelBuffer[offset].redComponent >=  230 && pixelBuffer[offset].redComponent <=  232 &&
-////                    pixelBuffer[offset].greenComponent >=  238 && pixelBuffer[offset].greenComponent <=  240 &&
-////                    pixelBuffer[offset].blueComponent >= 246 && pixelBuffer[offset].blueComponent <= 248 &&
-////                    pixelBuffer[offset].alphaComponent == 255 {
-////                    print (pixelBuffer[offset].redComponent, pixelBuffer[offset].greenComponent, pixelBuffer[offset].blueComponent,pixelBuffer[offset].alphaComponent)
-////                }
-        // }
-                for row in 0 ..< Int(height) {
-                    for column in 0 ..< Int(width) {
+                for row in 0 ..< Int(height/2) {
+                    for column in 0 ..< Int(width/2) {
                         let offset = row * width + column
                         if pixelBuffer[offset].blueComponent != 255 {
-                            pixelBuffer[offset] = .blue
+                            //pixelBuffer[offset] = .blue
+                            pixelBuffer[offset].color = pixelBuffer[offset].color | (255 << 8)
                         }
                     }
                 }
@@ -331,47 +427,5 @@ extension ViewController {
 
         return outputImage
     }
-    
-    struct RGBA32: Equatable {
-        private var color: UInt32
-        
-        var redComponent: UInt8 {
-            return UInt8((color >> 24) & 255)
-        }
-        
-        var greenComponent: UInt8 {
-            return UInt8((color >> 16) & 255)
-        }
-        
-        var blueComponent: UInt8 {
-            return UInt8((color >> 8) & 255)
-        }
-        
-        var alphaComponent: UInt8 {
-            return UInt8((color >> 0) & 255)
-        }
-        
-        init(red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
-            let red   = UInt32(red)
-            let green = UInt32(green)
-            let blue  = UInt32(blue)
-            let alpha = UInt32(alpha)
-            color = (red << 24) | (green << 16) | (blue << 8) | (alpha << 0)
-        }
-        
-        static let red     = RGBA32(red: 255, green: 0,   blue: 0,   alpha: 255)
-        static let green   = RGBA32(red: 0,   green: 255, blue: 0,   alpha: 255)
-        static let blue    = RGBA32(red: 0,   green: 0,   blue: 255, alpha: 255)
-        static let white   = RGBA32(red: 255, green: 255, blue: 255, alpha: 255)
-        static let black   = RGBA32(red: 0,   green: 0,   blue: 0,   alpha: 255)
-        static let magenta = RGBA32(red: 255, green: 0,   blue: 255, alpha: 255)
-        static let yellow  = RGBA32(red: 255, green: 255, blue: 0,   alpha: 255)
-        static let cyan    = RGBA32(red: 0,   green: 255, blue: 255, alpha: 255)
-        
-        static let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
-        
-        static func ==(lhs: RGBA32, rhs: RGBA32) -> Bool {
-            return lhs.color == rhs.color
-        }
-    }
 }
+    

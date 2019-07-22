@@ -7,14 +7,90 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E9B6C5C22E5E8DA0073EF2A /* PoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */; };
+		8E9B6C5E22E5E90E0073EF2A /* CocoPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C5D22E5E90E0073EF2A /* CocoPairs.swift */; };
+		8E9B6C6122E5F68F0073EF2A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E9B6C6022E5F68F0073EF2A /* opencv2.framework */; };
+		8E9B6C6722E5F78A0073EF2A /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */; };
+		8E9B6CA922E5FE5E0073EF2A /* Exponential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C8B22E5FE5E0073EF2A /* Exponential.swift */; };
+		8E9B6CAA22E5FE5E0073EF2A /* ComplexArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C8C22E5FE5E0073EF2A /* ComplexArithmetic.swift */; };
+		8E9B6CAB22E5FE5E0073EF2A /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C8D22E5FE5E0073EF2A /* Arithmetic.swift */; };
+		8E9B6CAC22E5FE5E0073EF2A /* PointerUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C8E22E5FE5E0073EF2A /* PointerUtilities.swift */; };
+		8E9B6CAD22E5FE5E0073EF2A /* Auxiliary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C8F22E5FE5E0073EF2A /* Auxiliary.swift */; };
+		8E9B6CAE22E5FE5E0073EF2A /* Tensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9022E5FE5E0073EF2A /* Tensor.swift */; };
+		8E9B6CAF22E5FE5E0073EF2A /* ComplexArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9122E5FE5E0073EF2A /* ComplexArraySlice.swift */; };
+		8E9B6CB022E5FE5E0073EF2A /* ComplexArrayRealSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9222E5FE5E0073EF2A /* ComplexArrayRealSlice.swift */; };
+		8E9B6CB122E5FE5E0073EF2A /* TensorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9322E5FE5E0073EF2A /* TensorSlice.swift */; };
+		8E9B6CB222E5FE5E0073EF2A /* Span.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9422E5FE5E0073EF2A /* Span.swift */; };
+		8E9B6CB322E5FE5E0073EF2A /* FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9522E5FE5E0073EF2A /* FFT.swift */; };
+		8E9B6CB422E5FE5E0073EF2A /* MatrixSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9622E5FE5E0073EF2A /* MatrixSlice.swift */; };
+		8E9B6CB522E5FE5E0073EF2A /* LinearOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9722E5FE5E0073EF2A /* LinearOperators.swift */; };
+		8E9B6CB622E5FE5E0073EF2A /* Real.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9822E5FE5E0073EF2A /* Real.swift */; };
+		8E9B6CB722E5FE5E0073EF2A /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9922E5FE5E0073EF2A /* Sequence.swift */; };
+		8E9B6CB822E5FE5E0073EF2A /* ComplexArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9A22E5FE5E0073EF2A /* ComplexArray.swift */; };
+		8E9B6CB922E5FE5E0073EF2A /* MatrixArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9B22E5FE5E0073EF2A /* MatrixArithmetic.swift */; };
+		8E9B6CBA22E5FE5E0073EF2A /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9C22E5FE5E0073EF2A /* Interval.swift */; };
+		8E9B6CBB22E5FE5E0073EF2A /* ValueArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9D22E5FE5E0073EF2A /* ValueArray.swift */; };
+		8E9B6CBC22E5FE5E0073EF2A /* TensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9E22E5FE5E0073EF2A /* TensorType.swift */; };
+		8E9B6CBD22E5FE5E0073EF2A /* DSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C9F22E5FE5E0073EF2A /* DSP.swift */; };
+		8E9B6CBE22E5FE5E0073EF2A /* ValueArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA022E5FE5E0073EF2A /* ValueArraySlice.swift */; };
+		8E9B6CBF22E5FE5E0073EF2A /* LinearType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA122E5FE5E0073EF2A /* LinearType.swift */; };
+		8E9B6CC022E5FE5E0073EF2A /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA222E5FE5E0073EF2A /* Complex.swift */; };
+		8E9B6CC122E5FE5E0073EF2A /* Trigonometric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA322E5FE5E0073EF2A /* Trigonometric.swift */; };
+		8E9B6CC222E5FE5E0073EF2A /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA422E5FE5E0073EF2A /* Matrix.swift */; };
+		8E9B6CC322E5FE5E0073EF2A /* Hyperbolic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA522E5FE5E0073EF2A /* Hyperbolic.swift */; };
+		8E9B6CC422E5FE5E0073EF2A /* 2DTensorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA622E5FE5E0073EF2A /* 2DTensorSlice.swift */; };
+		8E9B6CC522E5FE5E0073EF2A /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA722E5FE5E0073EF2A /* Value.swift */; };
+		8E9B6CC622E5FE5E0073EF2A /* QuadraticType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6CA822E5FE5E0073EF2A /* QuadraticType.swift */; };
 		8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */; };
 		8EBD62DB22D4E67E009F6FB1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62DA22D4E67E009F6FB1 /* ViewController.swift */; };
 		8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */; };
 		8EBD62E022D4E680009F6FB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */; };
 		8EBD62E322D4E680009F6FB1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62E122D4E680009F6FB1 /* LaunchScreen.storyboard */; };
+		8ED5729E22DDFAF600FB2AD4 /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8ED5729D22DDFAF600FB2AD4 /* Resnet50.mlmodel */; };
+		8ED572A022DE060600FB2AD4 /* RBGA_struc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */; };
+		8ED572A222DE068A00FB2AD4 /* PixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */; };
+		8ED572A822DE15DB00FB2AD4 /* PixelMod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */; };
+		8ED572AA22DF5D0400FB2AD4 /* MobileOpenPose.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8ED572A922DF5D0400FB2AD4 /* MobileOpenPose.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PoseEstimator.swift; path = ../../../../../System/Volumes/Data/Users/lripa/Documents/PhaseI/PhaseI/PoseEstimator.swift; sourceTree = "<group>"; };
+		8E9B6C5D22E5E90E0073EF2A /* CocoPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CocoPairs.swift; path = ../../../../../System/Volumes/Data/Users/lripa/Documents/PhaseI/PhaseI/CocoPairs.swift; sourceTree = "<group>"; };
+		8E9B6C6022E5F68F0073EF2A /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../System/Volumes/Data/Users/lripa/Downloads/opencv2.framework; sourceTree = "<group>"; };
+		8E9B6C6222E5F7240073EF2A /* PhaseI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhaseI-Bridging-Header.h"; sourceTree = "<group>"; };
+		8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
+		8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
+		8E9B6C6922E5F7C50073EF2A /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = ../../../../../System/Volumes/Data/Users/lripa/Documents/PhaseI/PhaseI/PrefixHeader.pch; sourceTree = "<group>"; };
+		8E9B6C8B22E5FE5E0073EF2A /* Exponential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exponential.swift; sourceTree = "<group>"; };
+		8E9B6C8C22E5FE5E0073EF2A /* ComplexArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArithmetic.swift; sourceTree = "<group>"; };
+		8E9B6C8D22E5FE5E0073EF2A /* Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arithmetic.swift; sourceTree = "<group>"; };
+		8E9B6C8E22E5FE5E0073EF2A /* PointerUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointerUtilities.swift; sourceTree = "<group>"; };
+		8E9B6C8F22E5FE5E0073EF2A /* Auxiliary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auxiliary.swift; sourceTree = "<group>"; };
+		8E9B6C9022E5FE5E0073EF2A /* Tensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tensor.swift; sourceTree = "<group>"; };
+		8E9B6C9122E5FE5E0073EF2A /* ComplexArraySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArraySlice.swift; sourceTree = "<group>"; };
+		8E9B6C9222E5FE5E0073EF2A /* ComplexArrayRealSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArrayRealSlice.swift; sourceTree = "<group>"; };
+		8E9B6C9322E5FE5E0073EF2A /* TensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TensorSlice.swift; sourceTree = "<group>"; };
+		8E9B6C9422E5FE5E0073EF2A /* Span.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Span.swift; sourceTree = "<group>"; };
+		8E9B6C9522E5FE5E0073EF2A /* FFT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFT.swift; sourceTree = "<group>"; };
+		8E9B6C9622E5FE5E0073EF2A /* MatrixSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixSlice.swift; sourceTree = "<group>"; };
+		8E9B6C9722E5FE5E0073EF2A /* LinearOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearOperators.swift; sourceTree = "<group>"; };
+		8E9B6C9822E5FE5E0073EF2A /* Real.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Real.swift; sourceTree = "<group>"; };
+		8E9B6C9922E5FE5E0073EF2A /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
+		8E9B6C9A22E5FE5E0073EF2A /* ComplexArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArray.swift; sourceTree = "<group>"; };
+		8E9B6C9B22E5FE5E0073EF2A /* MatrixArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixArithmetic.swift; sourceTree = "<group>"; };
+		8E9B6C9C22E5FE5E0073EF2A /* Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
+		8E9B6C9D22E5FE5E0073EF2A /* ValueArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueArray.swift; sourceTree = "<group>"; };
+		8E9B6C9E22E5FE5E0073EF2A /* TensorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TensorType.swift; sourceTree = "<group>"; };
+		8E9B6C9F22E5FE5E0073EF2A /* DSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DSP.swift; sourceTree = "<group>"; };
+		8E9B6CA022E5FE5E0073EF2A /* ValueArraySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueArraySlice.swift; sourceTree = "<group>"; };
+		8E9B6CA122E5FE5E0073EF2A /* LinearType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearType.swift; sourceTree = "<group>"; };
+		8E9B6CA222E5FE5E0073EF2A /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
+		8E9B6CA322E5FE5E0073EF2A /* Trigonometric.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trigonometric.swift; sourceTree = "<group>"; };
+		8E9B6CA422E5FE5E0073EF2A /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		8E9B6CA522E5FE5E0073EF2A /* Hyperbolic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hyperbolic.swift; sourceTree = "<group>"; };
+		8E9B6CA622E5FE5E0073EF2A /* 2DTensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 2DTensorSlice.swift; sourceTree = "<group>"; };
+		8E9B6CA722E5FE5E0073EF2A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		8E9B6CA822E5FE5E0073EF2A /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
 		8EBD62D522D4E67E009F6FB1 /* PhaseI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhaseI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8EBD62DA22D4E67E009F6FB1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +98,11 @@
 		8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8EBD62E222D4E680009F6FB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8EBD62E422D4E680009F6FB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8ED5729D22DDFAF600FB2AD4 /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
+		8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBGA_struc.swift; sourceTree = "<group>"; };
+		8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBuffer.swift; sourceTree = "<group>"; };
+		8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelMod.swift; sourceTree = "<group>"; };
+		8ED572A922DF5D0400FB2AD4 /* MobileOpenPose.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileOpenPose.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +110,66 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E9B6C6122E5F68F0073EF2A /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E9B6C5F22E5F68F0073EF2A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8E9B6C6022E5F68F0073EF2A /* opencv2.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8E9B6C8A22E5FE5E0073EF2A /* Upsurge */ = {
+			isa = PBXGroup;
+			children = (
+				8E9B6C8B22E5FE5E0073EF2A /* Exponential.swift */,
+				8E9B6C8C22E5FE5E0073EF2A /* ComplexArithmetic.swift */,
+				8E9B6C8D22E5FE5E0073EF2A /* Arithmetic.swift */,
+				8E9B6C8E22E5FE5E0073EF2A /* PointerUtilities.swift */,
+				8E9B6C8F22E5FE5E0073EF2A /* Auxiliary.swift */,
+				8E9B6C9022E5FE5E0073EF2A /* Tensor.swift */,
+				8E9B6C9122E5FE5E0073EF2A /* ComplexArraySlice.swift */,
+				8E9B6C9222E5FE5E0073EF2A /* ComplexArrayRealSlice.swift */,
+				8E9B6C9322E5FE5E0073EF2A /* TensorSlice.swift */,
+				8E9B6C9422E5FE5E0073EF2A /* Span.swift */,
+				8E9B6C9522E5FE5E0073EF2A /* FFT.swift */,
+				8E9B6C9622E5FE5E0073EF2A /* MatrixSlice.swift */,
+				8E9B6C9722E5FE5E0073EF2A /* LinearOperators.swift */,
+				8E9B6C9822E5FE5E0073EF2A /* Real.swift */,
+				8E9B6C9922E5FE5E0073EF2A /* Sequence.swift */,
+				8E9B6C9A22E5FE5E0073EF2A /* ComplexArray.swift */,
+				8E9B6C9B22E5FE5E0073EF2A /* MatrixArithmetic.swift */,
+				8E9B6C9C22E5FE5E0073EF2A /* Interval.swift */,
+				8E9B6C9D22E5FE5E0073EF2A /* ValueArray.swift */,
+				8E9B6C9E22E5FE5E0073EF2A /* TensorType.swift */,
+				8E9B6C9F22E5FE5E0073EF2A /* DSP.swift */,
+				8E9B6CA022E5FE5E0073EF2A /* ValueArraySlice.swift */,
+				8E9B6CA122E5FE5E0073EF2A /* LinearType.swift */,
+				8E9B6CA222E5FE5E0073EF2A /* Complex.swift */,
+				8E9B6CA322E5FE5E0073EF2A /* Trigonometric.swift */,
+				8E9B6CA422E5FE5E0073EF2A /* Matrix.swift */,
+				8E9B6CA522E5FE5E0073EF2A /* Hyperbolic.swift */,
+				8E9B6CA622E5FE5E0073EF2A /* 2DTensorSlice.swift */,
+				8E9B6CA722E5FE5E0073EF2A /* Value.swift */,
+				8E9B6CA822E5FE5E0073EF2A /* QuadraticType.swift */,
+			);
+			name = Upsurge;
+			path = "../../../Downloads/iOS-OpenPose-master/iOSOpenPose/iOSOpenPose/Libraries/Upsurge";
+			sourceTree = "<group>";
+		};
 		8EBD62CC22D4E67E009F6FB1 = {
 			isa = PBXGroup;
 			children = (
+				8E9B6C6222E5F7240073EF2A /* PhaseI-Bridging-Header.h */,
 				8EBD62D722D4E67E009F6FB1 /* PhaseI */,
 				8EBD62D622D4E67E009F6FB1 /* Products */,
+				8E9B6C5F22E5F68F0073EF2A /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,9 +184,20 @@
 		8EBD62D722D4E67E009F6FB1 /* PhaseI */ = {
 			isa = PBXGroup;
 			children = (
+				8E9B6C8A22E5FE5E0073EF2A /* Upsurge */,
+				8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */,
+				8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */,
+				8E9B6C6922E5F7C50073EF2A /* PrefixHeader.pch */,
 				8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */,
 				8EBD62DA22D4E67E009F6FB1 /* ViewController.swift */,
+				8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */,
+				8E9B6C5D22E5E90E0073EF2A /* CocoPairs.swift */,
+				8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */,
+				8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */,
+				8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */,
 				8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */,
+				8ED572A922DF5D0400FB2AD4 /* MobileOpenPose.mlmodel */,
+				8ED5729D22DDFAF600FB2AD4 /* Resnet50.mlmodel */,
 				8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */,
 				8EBD62E122D4E680009F6FB1 /* LaunchScreen.storyboard */,
 				8EBD62E422D4E680009F6FB1 /* Info.plist */,
@@ -96,6 +237,7 @@
 				TargetAttributes = {
 					8EBD62D422D4E67E009F6FB1 = {
 						CreatedOnToolsVersion = 10.2.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -136,7 +278,45 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EBD62DB22D4E67E009F6FB1 /* ViewController.swift in Sources */,
+				8E9B6CB622E5FE5E0073EF2A /* Real.swift in Sources */,
+				8E9B6CAB22E5FE5E0073EF2A /* Arithmetic.swift in Sources */,
+				8E9B6CAE22E5FE5E0073EF2A /* Tensor.swift in Sources */,
+				8E9B6CB222E5FE5E0073EF2A /* Span.swift in Sources */,
+				8E9B6CB022E5FE5E0073EF2A /* ComplexArrayRealSlice.swift in Sources */,
+				8E9B6CC622E5FE5E0073EF2A /* QuadraticType.swift in Sources */,
+				8E9B6CBB22E5FE5E0073EF2A /* ValueArray.swift in Sources */,
+				8E9B6CAC22E5FE5E0073EF2A /* PointerUtilities.swift in Sources */,
+				8E9B6CBC22E5FE5E0073EF2A /* TensorType.swift in Sources */,
+				8E9B6C6722E5F78A0073EF2A /* OpenCVWrapper.mm in Sources */,
+				8ED572A822DE15DB00FB2AD4 /* PixelMod.swift in Sources */,
+				8E9B6CA922E5FE5E0073EF2A /* Exponential.swift in Sources */,
+				8ED572AA22DF5D0400FB2AD4 /* MobileOpenPose.mlmodel in Sources */,
+				8E9B6CBD22E5FE5E0073EF2A /* DSP.swift in Sources */,
+				8ED5729E22DDFAF600FB2AD4 /* Resnet50.mlmodel in Sources */,
+				8E9B6CB522E5FE5E0073EF2A /* LinearOperators.swift in Sources */,
+				8E9B6CB922E5FE5E0073EF2A /* MatrixArithmetic.swift in Sources */,
+				8E9B6CC122E5FE5E0073EF2A /* Trigonometric.swift in Sources */,
+				8E9B6CB722E5FE5E0073EF2A /* Sequence.swift in Sources */,
+				8E9B6CC022E5FE5E0073EF2A /* Complex.swift in Sources */,
+				8E9B6CC222E5FE5E0073EF2A /* Matrix.swift in Sources */,
+				8E9B6CB322E5FE5E0073EF2A /* FFT.swift in Sources */,
+				8ED572A222DE068A00FB2AD4 /* PixelBuffer.swift in Sources */,
+				8E9B6CBF22E5FE5E0073EF2A /* LinearType.swift in Sources */,
+				8E9B6C5E22E5E90E0073EF2A /* CocoPairs.swift in Sources */,
+				8E9B6CC322E5FE5E0073EF2A /* Hyperbolic.swift in Sources */,
+				8E9B6CB122E5FE5E0073EF2A /* TensorSlice.swift in Sources */,
+				8E9B6CC422E5FE5E0073EF2A /* 2DTensorSlice.swift in Sources */,
+				8E9B6CB422E5FE5E0073EF2A /* MatrixSlice.swift in Sources */,
+				8E9B6CAA22E5FE5E0073EF2A /* ComplexArithmetic.swift in Sources */,
+				8E9B6C5C22E5E8DA0073EF2A /* PoseEstimator.swift in Sources */,
+				8E9B6CAF22E5FE5E0073EF2A /* ComplexArraySlice.swift in Sources */,
+				8E9B6CB822E5FE5E0073EF2A /* ComplexArray.swift in Sources */,
 				8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */,
+				8E9B6CBE22E5FE5E0073EF2A /* ValueArraySlice.swift in Sources */,
+				8ED572A022DE060600FB2AD4 /* RBGA_struc.swift in Sources */,
+				8E9B6CBA22E5FE5E0073EF2A /* Interval.swift in Sources */,
+				8E9B6CAD22E5FE5E0073EF2A /* Auxiliary.swift in Sources */,
+				8E9B6CC522E5FE5E0073EF2A /* Value.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,8 +462,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 357FC5XRHL;
+				FRAMEWORK_SEARCH_PATHS = /Users/lripa/Downloads;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = PhaseI/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -291,6 +474,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = lripa.PhaseI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PhaseI-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -300,8 +485,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 357FC5XRHL;
+				FRAMEWORK_SEARCH_PATHS = /Users/lripa/Downloads;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				INFOPLIST_FILE = PhaseI/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -309,6 +497,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = lripa.PhaseI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "PhaseI-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
