@@ -60,7 +60,6 @@
 		8E9B6C6222E5F7240073EF2A /* PhaseI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhaseI-Bridging-Header.h"; sourceTree = "<group>"; };
 		8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
-		8E9B6C6922E5F7C50073EF2A /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrefixHeader.pch; path = ../../../../../System/Volumes/Data/Users/lripa/Documents/PhaseI/PhaseI/PrefixHeader.pch; sourceTree = "<group>"; };
 		8E9B6C8B22E5FE5E0073EF2A /* Exponential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exponential.swift; sourceTree = "<group>"; };
 		8E9B6C8C22E5FE5E0073EF2A /* ComplexArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArithmetic.swift; sourceTree = "<group>"; };
 		8E9B6C8D22E5FE5E0073EF2A /* Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arithmetic.swift; sourceTree = "<group>"; };
@@ -91,6 +90,7 @@
 		8E9B6CA622E5FE5E0073EF2A /* 2DTensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 2DTensorSlice.swift; sourceTree = "<group>"; };
 		8E9B6CA722E5FE5E0073EF2A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		8E9B6CA822E5FE5E0073EF2A /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
+		8E9B6CCB22E60A980073EF2A /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		8EBD62D522D4E67E009F6FB1 /* PhaseI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhaseI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8EBD62DA22D4E67E009F6FB1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -163,6 +163,16 @@
 			path = "../../../Downloads/iOS-OpenPose-master/iOSOpenPose/iOSOpenPose/Libraries/Upsurge";
 			sourceTree = "<group>";
 		};
+		8E9B6CCA22E60A980073EF2A /* OpenCV */ = {
+			isa = PBXGroup;
+			children = (
+				8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */,
+				8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */,
+				8E9B6CCB22E60A980073EF2A /* PrefixHeader.pch */,
+			);
+			path = OpenCV;
+			sourceTree = "<group>";
+		};
 		8EBD62CC22D4E67E009F6FB1 = {
 			isa = PBXGroup;
 			children = (
@@ -185,9 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				8E9B6C8A22E5FE5E0073EF2A /* Upsurge */,
-				8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */,
-				8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */,
-				8E9B6C6922E5F7C50073EF2A /* PrefixHeader.pch */,
+				8E9B6CCA22E60A980073EF2A /* OpenCV */,
 				8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */,
 				8EBD62DA22D4E67E009F6FB1 /* ViewController.swift */,
 				8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */,
@@ -463,6 +471,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 357FC5XRHL;
 				FRAMEWORK_SEARCH_PATHS = /Users/lripa/Downloads;
@@ -486,6 +495,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 357FC5XRHL;
 				FRAMEWORK_SEARCH_PATHS = /Users/lripa/Downloads;

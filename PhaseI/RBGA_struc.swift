@@ -44,6 +44,7 @@ struct RGBA32: Equatable {
     static let magenta = RGBA32(red: 255, green: 0,   blue: 255, alpha: 255)
     static let yellow  = RGBA32(red: 255, green: 255, blue: 0,   alpha: 255)
     static let cyan    = RGBA32(red: 0,   green: 255, blue: 255, alpha: 255)
+    static let transparent = RGBA32(red: 0, green: 0, blue: 0, alpha: 0)
     
     static let bitmapInfo = CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
     

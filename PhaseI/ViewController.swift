@@ -24,9 +24,13 @@ class ViewController: UIViewController {
     var viewImage: CGImage?
     var modifiedImage: UIImage?
     
+    static var instance: ViewController?
+    weak var delegate: RectangleDetectorDelegate?
+    let rectangleDetector = RectangleDetector()
+    
     let model = MobileOpenPose()
-    let ImageWidth = 368//224
-    let ImageHeight = 368 //224
+    let ImageWidth = 368
+    let ImageHeight = 368
     
     let dataOutputQueue = DispatchQueue(label: "video data queue",
                                         qos: .userInitiated,
@@ -51,14 +55,15 @@ class ViewController: UIViewController {
     
     @objc func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
-            let touchLocation: CGPoint = sender.location(in: sender.view)
-            print (touchLocation)
-            print(camPreview.getPixelColorAtPoint(point: touchLocation, sourceView: camPreview))
+            //let touchLocation: CGPoint = sender.location(in: sender.view)
+            //print ("Touch Location: \(touchLocation)")
+            //print(camPreview.getPixelColorAtPoint(point: touchLocation, sourceView: camPreview))
             
             if viewImage != nil{
-                print ("UIImage processed")
-                viewImage!.pixelData()
-                runCoreML(modifiedImage!)
+                //print ("UIImage processed")
+                //viewImage!.pixelData()
+                //runCoreML(modifiedImage!)
+                
             } else {
                 print("UIImage is empty")
             }
@@ -72,7 +77,7 @@ class ViewController: UIViewController {
         }
         return nil
     }
-    
+
     func measure <T> (_ f: @autoclosure () -> T) -> (result: T, duration: String) {
         let startTime = CFAbsoluteTimeGetCurrent()
         let result = f()
@@ -80,15 +85,12 @@ class ViewController: UIViewController {
         return (result, "Elapsed time is \(timeElapsed) seconds.")
     }
     
-    lazy var classificationRequest: [VNRequest] = {
-        do {
-            let model = try VNCoreMLModel(for: self.model.model)
-            let classificationRequest = VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
-            return [ classificationRequest ]
-        } catch {
-            fatalError("Can't load Vision ML model: \(error)")
+    func resetImage() {
+        // Delete Beizer paths of previous image
+        DispatchQueue.global().async {
+            self.camPreview.layer.sublayers = []
         }
-    }()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,10 +104,136 @@ class ViewController: UIViewController {
         self.view.addGestureRecognizer(tap)
         
         setupIdentifierConfidenceLabel()
+        rectangleDetector.delegate = self
         
-        print("\(OpenCVWrapper.openCVVersionString())")
     }
 }
+
+class RectangleDetector {
+    
+    let model = MobileOpenPose()
+    let ImageWidth = 368
+    let ImageHeight = 368
+    
+    private var currentCameraImage: CVPixelBuffer!
+    
+    private var updateTimer: Timer?
+    
+    /// The number of times per second to check for rectangles.
+    /// - Tag: UpdateInterval
+    private var updateInterval: TimeInterval = 0.1
+    
+    /// - Tag: IsBusy
+    private var isBusy = false
+    
+    /// - Tag: InitializeVisionTimer
+    init() {
+        self.updateTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { [weak self] _ in
+            if let capturedImage = ViewController.instance?.camPreview.image {
+                self?.search(capturedImage)
+            }
+        }
+    }
+    
+    lazy var classificationRequest: [VNRequest] = {
+        do {
+            let model = try VNCoreMLModel(for: self.model.model)
+            let classificationRequest = VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
+            return [ classificationRequest ]
+        } catch {
+            fatalError("Can't load Vision ML model: \(error)")
+        }
+    }()
+    
+    /// Search for rectangles in the camera's pixel buffer,
+    ///  if a search is not already running.
+    /// - Tag: SerializeVision
+    private func search(_ image: UIImage) {
+        guard !isBusy else { return }
+        isBusy = true
+        let img = image.resize(to: CGSize(width: ImageWidth,height: ImageHeight))
+        let modifiedpixelBuffer = img.pixelBuffer(width: ImageWidth, height: ImageHeight)
+        
+        // Note that the pixel buffer's orientation doesn't change even when the device rotates.
+        let handler = VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:])
+        do {
+            try handler.perform(classificationRequest)
+            } catch {
+                print(error)
+            }
+    
+        
+        DispatchQueue.global().async {
+            do {
+                try handler.perform([classificationRequest])
+            } catch {
+                print("Error: Rectangle detection failed - vision request failed.")
+                self.isBusy = false
+            }
+        }
+    }
+}
+
+extension ViewController: RectangleDetectorDelegate {
+    /// Called when the app recognized a rectangular shape in the user's envirnment.
+    /// - Tag: NewAlteredImage
+    func rectangleFound(rectangleContent: CIImage) {
+        DispatchQueue.main.async {
+            
+            // Ignore detected rectangles if the app is currently tracking an image.
+            guard self.modifiedImage == nil else {
+                return
+            }
+            
+            // Try tracking the image that lies within the rectangle the app just detected.
+            guard let newAlteredImage = AlteredImage(rectangleContent) else { return }
+            newAlteredImage.delegate = self
+            self.alteredImage = newAlteredImage
+            
+            // Start the session with the newly recognized image.
+            self.runImageTrackingSession(with: [newAlteredImage.referenceImage])
+        }
+    }
+}
+
+protocol RectangleDetectorDelegate: class {
+    func rectangleFound(rectangleContent: CIImage)
+}
+
+//    func runCoreML(_ pixelBuffer: CVPixelBuffer) {
+//        let model = MobileOpenPose()
+//        let startTime = CFAbsoluteTimeGetCurrent()
+//        if let prediction = try? model.prediction(image: pixelBuffer) {
+//
+//                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+//                print("coreml elapsed for \(timeElapsed) seconds")
+//
+//                let predictionOutput = prediction.net_output
+//                let length = predictionOutput.count
+//                print(predictionOutput)
+//
+//        }
+//    }
+//
+//    func runCoreML(_ image: UIImage) {
+//        //camPreview.image = image
+//
+//        let img = image.resize(to: CGSize(width: ImageWidth,height: ImageHeight))
+//        let modifiedpixelBuffer = img.pixelBuffer(width: ImageWidth, height: ImageHeight)
+//
+//        let image = CIImage(cvPixelBuffer: modifiedpixelBuffer!)
+//        let previewImage: CIImage = image
+//
+//        let testingPixels = convertCIImageToCGImage(inputImage: previewImage)
+//        testingPixels?.pixelData()
+//
+//        let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:])
+//        do {
+//            try classifierRequestHandler.perform(self.classificationRequest)
+//        } catch {
+//            print(error)
+//        }
+//    }
 
 // MARK: - Camera Setup
 extension ViewController {
@@ -155,22 +283,6 @@ extension ViewController {
         }
         return true
     }
-    
-    func currentVideoOrientation() -> AVCaptureVideoOrientation {
-        var orientation: AVCaptureVideoOrientation
-        
-        switch UIDevice.current.orientation {
-        case .portrait:
-            orientation = AVCaptureVideoOrientation.portrait
-        case .landscapeRight:
-            orientation = AVCaptureVideoOrientation.landscapeLeft
-        case .portraitUpsideDown:
-            orientation = AVCaptureVideoOrientation.portraitUpsideDown
-        default:
-            orientation = AVCaptureVideoOrientation.landscapeRight
-        }
-        return orientation
-    }
 }
 
 // MARK: - Camera Output
@@ -180,16 +292,14 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                        didOutput sampleBuffer: CMSampleBuffer,
                        from connection: AVCaptureConnection) {
         
-        
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         let image = CIImage(cvPixelBuffer: pixelBuffer!)
-        
-        let previewImage: CIImage
-        previewImage = image
+        let previewImage: CIImage = image
         
         viewImage = convertCIImageToCGImage(inputImage: previewImage)
         modifiedImage = processByPixel(in: viewImage!)
-        
+        //runCoreML(modifiedImage!)
+       
         // MARK: - Properties of Image Input for model
         
 //        let request = VNCoreMLRequest(model: model) { (finishedReq, err) in
@@ -225,47 +335,17 @@ extension ViewController {
         let doublePtr =  mlarray.dataPointer.bindMemory(to: Double.self, capacity: length)
         let doubleBuffer = UnsafeBufferPointer(start: doublePtr, count: length)
         let mm = Array(doubleBuffer)
-        // Draw new lines
+        
+        resetImage()
         drawLine(mm)
     }
     
-//    func runCoreML(_ pixelBuffer: CVPixelBuffer) {
-//        let model = MobileOpenPose()
-//        let startTime = CFAbsoluteTimeGetCurrent()
-//        if let prediction = try? model.prediction(image: pixelBuffer) {
-//
-//                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-//                print("coreml elapsed for \(timeElapsed) seconds")
-//
-//                let predictionOutput = prediction.net_output
-//                let length = predictionOutput.count
-//                print(predictionOutput)
-//
-//        }
-//    }
-    
-    func runCoreML(_ image: UIImage) {
-        camPreview.image = image
-        
-        //let img = image.resize(to: CGSize(width: ImageWidth,height: ImageHeight)).cgImage!
-        let modifiedpixelBuffer = image.pixelBuffer(width: ImageWidth, height: ImageHeight)
-        let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:])
-        do {
-            try classifierRequestHandler.perform(self.classificationRequest)
-        } catch {
-            print(error)
-        }
-        
-       
-    }
-    
     func drawLine(_ mm: Array<Double>){
-        
         let com = PoseEstimator(ImageWidth,ImageHeight)
         
         let res = measure(com.estimate(mm))
-        let humans = res.result;
-        print("estimate \(res.duration)")
+        let humans = res.result
+        print("Estimate drawing measurement \(res.duration)")
         
         var keypoint = [Int32]()
         var pos = [CGPoint]()
@@ -295,13 +375,21 @@ extension ViewController {
         }
         let opencv = OpenCVWrapper()
         let layer = CALayer()
-        let uiImage = opencv.renderKeyPoint(camPreview.bounds, keypoint: &keypoint, keypoint_size: Int32(keypoint.count), pos: &pos)
+        //let uiImage = opencv.renderKeyPoint(camPreview.bounds, keypoint: &keypoint, keypoint_size: Int32(keypoint.count), pos: &pos)
         
-        layer.frame = camPreview.bounds
-        layer.contents = uiImage.cgImage
+        layer.frame = CGRect(x: 10, y: 172, width: 440, height: 495)
+        layer.backgroundColor = UIColor.red.cgColor
+        //layer.contents = uiImage.cgImage
         layer.opacity = 0.6
         layer.masksToBounds = true
-        self.view.layer.addSublayer(layer)
+        
+        //self.view.layer.addSublayer(layer)
+        let renderedImage = opencv.renderKeyPoint(layer.frame,
+                                                            keypoint: &keypoint,
+                                                            keypoint_size: Int32(keypoint.count),
+                                                            pos: &pos)
+        layer.contents = renderedImage.cgImage
+        camPreview.layer.addSublayer(layer)
         
     }
     
@@ -316,59 +404,7 @@ extension ViewController {
         line.lineJoin = CAShapeLayerLineJoin.round
         self.view.layer.addSublayer(line)
     }
-}
 
-// MARK: - Tap function to retrieve pixel information at a certain point
-extension UIImageView {
-    func getPixelColorAtPoint(point: CGPoint, sourceView: UIImageView) -> UIColor {
-        let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        let context = CGContext(data: pixel,
-                                width: 1,
-                                height: 1,
-                                bitsPerComponent: 8,
-                                bytesPerRow: 4,
-                                space: colorSpace,
-                                bitmapInfo: bitmapInfo.rawValue)
-        
-        context!.translateBy(x: -point.x, y: -point.y)
-        
-        
-        sourceView.layer.render(in: context!)
-        let color: UIColor = UIColor(red: CGFloat(pixel[0])/255.0,
-                                     green: CGFloat(pixel[1])/255.0,
-                                     blue: CGFloat(pixel[2])/255.0,
-                                     alpha: CGFloat(pixel[3])/255.0)
-        
-        pixel.deallocate()
-        return color
-    }
-}
-
-// MARK: - Function to output pixel data
-extension CGImage {
-    func pixelData() { //}-> [UInt8]? {
-        let dataSize = self.width * self.height * 4
-        var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let context = CGContext(data: &pixelData,
-                                width: Int(self.width),
-                                height: Int(self.height),
-                                bitsPerComponent: 8,
-                                bytesPerRow: 4 * Int(self.width),
-                                space: colorSpace,
-                                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-        context?.draw(self, in: CGRect(x: 0, y: 0, width: self.width, height: self.height))
-
-        for i in stride(from: pixelData.index(after: 1), to: pixelData.endIndex, by: 4){
-            pixelData[i] = 255 // the 255 replaces index 2 which is blue
-        }
-        print ("Width: \(self.width), Height: \(self.height)")
-        print ("Pixel Data: \(pixelData.prefix(12))")
-
-        //return (pixelData)
-    }
 }
 
 extension UIImage {
@@ -378,6 +414,7 @@ extension UIImage {
         let resizedImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         
+        print ("Resized - Width: \(resizedImage.size.width * resizedImage.scale), Height: \(resizedImage.size.height * resizedImage.scale)" )
         return resizedImage
     }
 }
@@ -411,19 +448,22 @@ extension ViewController {
         guard let buffer = context.data else { print("Cannot get context data!"); return nil }
         
         let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
-        
-                for row in 0 ..< Int(height/2) {
-                    for column in 0 ..< Int(width/2) {
+
+                for row in width ..< Int(height) {
+                    for column in 0 ..< Int(width) {
                         let offset = row * width + column
-                        if pixelBuffer[offset].blueComponent != 255 {
-                            //pixelBuffer[offset] = .blue
-                            pixelBuffer[offset].color = pixelBuffer[offset].color | (255 << 8)
-                        }
+//                        if pixelBuffer[offset].alphaComponent == 255 {
+//                            pixelBuffer[offset].color = pixelBuffer[offset].color | (0 << 0)
+//                        }
+                            if pixelBuffer[offset] != .transparent {
+                                pixelBuffer[offset] = .transparent
+                            }
                     }
                 }
-        
+
         let outputCGImage = context.makeImage()!
         let outputImage = UIImage(cgImage: outputCGImage)
+        
 
         return outputImage
     }
