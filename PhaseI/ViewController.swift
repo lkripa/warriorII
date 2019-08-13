@@ -109,7 +109,7 @@ class ViewController: UIViewController {
     }
 }
 
-class RectangleDetector {
+class BodyDetector {
     
     let model = MobileOpenPose()
     let ImageWidth = 368
@@ -174,7 +174,7 @@ class RectangleDetector {
     }
 }
 
-extension ViewController: RectangleDetectorDelegate {
+extension ViewController: RectangleDetectorDelegate
     /// Called when the app recognized a rectangular shape in the user's envirnment.
     /// - Tag: NewAlteredImage
     func rectangleFound(rectangleContent: CIImage) {
