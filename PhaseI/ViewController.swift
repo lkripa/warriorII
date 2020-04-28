@@ -2,430 +2,487 @@
 //  ViewController.swift
 //  PhaseI
 //
-//  Created by Lara Riparip on 09.07.19.
+//  Created by Lara Riparip on 21.11.19.
 //  Copyright © 2019 Lara Riparip. All rights reserved.
 //
 
 import UIKit
-import AVFoundation
-import CoreGraphics
 import AVKit
 import Vision
-import VideoToolbox
-import CoreML
 
-
-class ViewController: UIViewController {
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    @IBOutlet weak var camPreview: UIImageView!
-    let captureSession = AVCaptureSession()
-    var previewLayer: AVCaptureVideoPreviewLayer!
-    var activeInput: AVCaptureDeviceInput!
-    var viewImage: CGImage?
-    var modifiedImage: UIImage?
+    var jointViews = UIImageView()
+    let queue = DispatchQueue(label: "videoQueue")
+    var coor = [Double](repeating: Double.nan, count: (17))
+    var timer = Timer()
+    var poseChecker = Array(repeating: "", count: 5)
     
-    let model = MobileOpenPose()
-    let ImageWidth = 368//224
-    let ImageHeight = 368 //224
+    //MARK: - Class Names
+    let classNames = ["bridge", "chair", "plank", "standing", "tree", "triangle", "warrior1", "warrior2", "warrior3" ]
+    let classNames_cnn = ["plank", "tree", "warrior1", "warrior2", "chair", "bridge", "warrior3", "triangle", "standing"]
     
-    let dataOutputQueue = DispatchQueue(label: "video data queue",
-                                        qos: .userInitiated,
-                                        attributes: [],
-                                        autoreleaseFrequency: .workItem)
-    
+    //MARK: - Functions
     let identifierLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .white
         label.textAlignment = .center
+        label.textColor = .black
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
+    var startTime = CFAbsoluteTime()
+    func measure <T> (_ timedFunction: @autoclosure () -> T) -> (result: T, duration: String) {
+            let startTime = CFAbsoluteTimeGetCurrent()
+            let result = timedFunction()
+            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            return (result, "Elapsed time is \(timeElapsed) seconds.")
+        }
+    
+    var previousJoint = String()
+    let synth = AVSpeechSynthesizer()
+    func speak(_ phrase: String) {
+        let utterance = AVSpeechUtterance(string: phrase)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.postUtteranceDelay = 1
+        utterance.rate = 0.4
+        if self.synth.isSpeaking == false {
+            self.synth.speak(utterance)
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        cameraSetup()
+        setupJointView()
+        setupIdentifierConfidenceLabel()
+    }
+    
+     //MARK: - Capture Session
+    func cameraSetup(){
+        
+        let captureSession = AVCaptureSession()
+        captureSession.sessionPreset = .photo
+        captureSession.sessionPreset = .vga640x480
+        
+        guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
+        guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
+        captureSession.addInput(input)
+        
+        captureSession.startRunning()
+        
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        view.layer.addSublayer(previewLayer)
+        previewLayer.frame = view.frame
+        
+        let dataOutput = AVCaptureVideoDataOutput()
+        dataOutput.setSampleBufferDelegate(self, queue: queue)
+        captureSession.addOutput(dataOutput)
+        
+    }
+    
+    // MARK: - Setups
     fileprivate func setupIdentifierConfidenceLabel() {
         view.addSubview(identifierLabel)
         identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32).isActive = true
         identifierLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         identifierLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         identifierLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        self.identifierLabel.text = "Waiting for Pose"
     }
     
-    @objc func handleTap(sender: UITapGestureRecognizer) {
-        if sender.state == .ended {
-            let touchLocation: CGPoint = sender.location(in: sender.view)
-            print (touchLocation)
-            print(camPreview.getPixelColorAtPoint(point: touchLocation, sourceView: camPreview))
-            
-            if viewImage != nil{
-                print ("UIImage processed")
-                viewImage!.pixelData()
-                runCoreML(modifiedImage!)
-            } else {
-                print("UIImage is empty")
-            }
+    fileprivate func setupJointView(){
+        self.view.addSubview(jointViews)
+        jointViews.frame = CGRect(x: -60 , y: 171, width: 551, height: 551)
+        jointViews.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+    }
+    
+    // MARK: - Skeletal Rendering
+    func drawLine(_ mm: Array<Double>) {
+        DispatchQueue.main.async {
+            self.jointViews.subviews.forEach({ $0.removeFromSuperview() })
         }
-    }
-    
-    func convertCIImageToCGImage(inputImage: CIImage) -> CGImage? {
-        let context = CIContext(options: nil)
-        if let cgImage = context.createCGImage(inputImage, from: inputImage.extent) {
-            return cgImage
-        }
-        return nil
-    }
-    
-    func measure <T> (_ f: @autoclosure () -> T) -> (result: T, duration: String) {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        let result = f()
-        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-        return (result, "Elapsed time is \(timeElapsed) seconds.")
-    }
-    
-    lazy var classificationRequest: [VNRequest] = {
-        do {
-            let model = try VNCoreMLModel(for: self.model.model)
-            let classificationRequest = VNCoreMLRequest(model: model, completionHandler: self.handleClassification)
-            return [ classificationRequest ]
-        } catch {
-            fatalError("Can't load Vision ML model: \(error)")
-        }
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    
-        if setupSession() {
-          captureSession.startRunning()
-        }
-        
-        let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.handleTap(sender:)))
-        tap.numberOfTapsRequired = 1
-        self.view.addGestureRecognizer(tap)
-        
-        setupIdentifierConfidenceLabel()
-        
-        print("\(OpenCVWrapper.openCVVersionString())")
-    }
-}
+//          var startTime = CFAbsoluteTimeGetCurrent()
+          let poseEst = PoseEstimator(368,368)
+          let timedResult = measure(poseEst.estimate(mm))
+          let humans = timedResult.result
+          var keypoint = [Int32]()
+          var pos = [CGPoint]()
+          let primary = [0,2,5,8,11, 14,15,16,17]
 
-// MARK: - Camera Setup
-extension ViewController {
-    func setupSession() -> Bool {
-        // setup Camera
-        guard let camera = AVCaptureDevice.default(.builtInDualCamera, for: AVMediaType.video, position: .back) else { fatalError("No Depth Camera")}
         
-        captureSession.sessionPreset = .photo
-        
-        do {
-            let input = try AVCaptureDeviceInput(device: camera)
-            
-            if captureSession.canAddInput(input) {
-                captureSession.addInput(input)
-                activeInput = input //this is not in the depth map
-            }
-        } catch {
-            print("Error setting device video input: \(error)")
-            return false
-        }
-        // 2 setup output
-        let output = AVCaptureVideoDataOutput()
-        output.setSampleBufferDelegate(self, queue: dataOutputQueue)
-        output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-        
-        if captureSession.canAddOutput(output) {
-            captureSession.addOutput(output)
-        }
-        
-        let videoConnection = output.connection(with: .video)
-        videoConnection?.videoOrientation = .portrait
-        
-        // 3 lock AVCaptureDevice
-        do {
-            try camera.lockForConfiguration()
-            
-            // 4 set minimum frame duration to be equal to the supported frame rate of the depth data
-            if let frameDuration = camera.activeDepthDataFormat?
-                .videoSupportedFrameRateRanges.first?.minFrameDuration {
-                camera.activeVideoMinFrameDuration = frameDuration
-            }
-            
-            // 5 unlock configuration
-            camera.unlockForConfiguration()
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        return true
-    }
-    
-    func currentVideoOrientation() -> AVCaptureVideoOrientation {
-        var orientation: AVCaptureVideoOrientation
-        
-        switch UIDevice.current.orientation {
-        case .portrait:
-            orientation = AVCaptureVideoOrientation.portrait
-        case .landscapeRight:
-            orientation = AVCaptureVideoOrientation.landscapeLeft
-        case .portraitUpsideDown:
-            orientation = AVCaptureVideoOrientation.portraitUpsideDown
-        default:
-            orientation = AVCaptureVideoOrientation.landscapeRight
-        }
-        return orientation
-    }
-}
-
-// MARK: - Camera Output
-extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-    
-    func captureOutput(_ output: AVCaptureOutput,
-                       didOutput sampleBuffer: CMSampleBuffer,
-                       from connection: AVCaptureConnection) {
-        
-        
-        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        let image = CIImage(cvPixelBuffer: pixelBuffer!)
-        
-        let previewImage: CIImage
-        previewImage = image
-        
-        viewImage = convertCIImageToCGImage(inputImage: previewImage)
-        modifiedImage = processByPixel(in: viewImage!)
-        
-        // MARK: - Properties of Image Input for model
-        
-//        let request = VNCoreMLRequest(model: model) { (finishedReq, err) in
-//
-//            guard let results = finishedReq.results as? [VNClassificationObservation] else { return }
-//
-//            guard let firstObservation = results.first else { return }
-//
-//            print(firstObservation.identifier, firstObservation.confidence)
-//
-//            DispatchQueue.main.async {
-//                self.identifierLabel.text = "\(firstObservation.identifier) \(firstObservation.confidence * 100)"
-//            }
-//        }
-        
-//        let modifiedpixelBuffer = modifiedImage!.pixelBuffer(width: ImageWidth, height: ImageHeight)
-//        runCoreML(modifiedpixelBuffer!)
-        //try? VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:]).perform([request])
-        
-            DispatchQueue.main.async { [weak self] in
-                self?.camPreview.image = self?.modifiedImage
-                }
-        }
-    }
-
-extension ViewController {
-    
-    func handleClassification(request: VNRequest, error: Error?) {
-        
-        guard let observations = request.results as? [VNCoreMLFeatureValueObservation] else { fatalError() }
-        let mlarray = observations[0].featureValue.multiArrayValue!
-        let length = mlarray.count
-        let doublePtr =  mlarray.dataPointer.bindMemory(to: Double.self, capacity: length)
-        let doubleBuffer = UnsafeBufferPointer(start: doublePtr, count: length)
-        let mm = Array(doubleBuffer)
-        // Draw new lines
-        drawLine(mm)
-    }
-    
-//    func runCoreML(_ pixelBuffer: CVPixelBuffer) {
-//        let model = MobileOpenPose()
-//        let startTime = CFAbsoluteTimeGetCurrent()
-//        if let prediction = try? model.prediction(image: pixelBuffer) {
-//
-//                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-//                print("coreml elapsed for \(timeElapsed) seconds")
-//
-//                let predictionOutput = prediction.net_output
-//                let length = predictionOutput.count
-//                print(predictionOutput)
-//
-//        }
-//    }
-    
-    func runCoreML(_ image: UIImage) {
-        camPreview.image = image
-        
-        //let img = image.resize(to: CGSize(width: ImageWidth,height: ImageHeight)).cgImage!
-        let modifiedpixelBuffer = image.pixelBuffer(width: ImageWidth, height: ImageHeight)
-        let classifierRequestHandler = VNImageRequestHandler(cvPixelBuffer: modifiedpixelBuffer!, options: [:])
-        do {
-            try classifierRequestHandler.perform(self.classificationRequest)
-        } catch {
-            print(error)
-        }
-        
-       
-    }
-    
-    func drawLine(_ mm: Array<Double>){
-        
-        let com = PoseEstimator(ImageWidth,ImageHeight)
-        
-        let res = measure(com.estimate(mm))
-        let humans = res.result;
-        print("estimate \(res.duration)")
-        
-        var keypoint = [Int32]()
-        var pos = [CGPoint]()
-        for human in humans {
+          for human in humans {
+            print("humans: \(humans.count)")
             var centers = [Int: CGPoint]()
+            var testing = [Double](repeating: Double.nan, count: (17))
             for i in 0...CocoPart.Background.rawValue {
                 if human.bodyParts.keys.firstIndex(of: i) == nil {
                     continue
                 }
                 let bodyPart = human.bodyParts[i]!
-                centers[i] = CGPoint(x: bodyPart.x, y: bodyPart.y)
-                //                centers[i] = CGPoint(x: Int(bodyPart.x * CGFloat(imageW) + 0.5), y: Int(bodyPart.y * CGFloat(imageH) + 0.5))
-            }
-            
-            for (pairOrder, (pair1,pair2)) in CocoPairsRender.enumerated() {
-                
-                if human.bodyParts.keys.firstIndex(of: pair1) == nil || human.bodyParts.keys.firstIndex(of: pair2) == nil {
-                    continue
-                }
-                if centers.index(forKey: pair1) != nil && centers.index(forKey: pair2) != nil{
-                    keypoint.append(Int32(pairOrder))
-                    pos.append(centers[pair1]!)
-                    pos.append(centers[pair2]!)
-                    //                    addLine(fromPoint: centers[pair1]!, toPoint: centers[pair2]!, color: CocoColors[pairOrder])
-                }
-            }
-        }
-        let opencv = OpenCVWrapper()
-        let layer = CALayer()
-        let uiImage = opencv.renderKeyPoint(camPreview.bounds, keypoint: &keypoint, keypoint_size: Int32(keypoint.count), pos: &pos)
-        
-        layer.frame = camPreview.bounds
-        layer.contents = uiImage.cgImage
-        layer.opacity = 0.6
-        layer.masksToBounds = true
-        self.view.layer.addSublayer(layer)
-        
-    }
-    
-    func addLine(fromPoint start: CGPoint, toPoint end:CGPoint, color: UIColor) {
-        let line = CAShapeLayer()
-        let linePath = UIBezierPath()
-        linePath.move(to: start)
-        linePath.addLine(to: end)
-        line.path = linePath.cgPath
-        line.strokeColor = color.cgColor
-        line.lineWidth = 3
-        line.lineJoin = CAShapeLayerLineJoin.round
-        self.view.layer.addSublayer(line)
-    }
-}
+                if human.bodyParts[1] != nil {
+                    let neckJoint = human.bodyParts[1]!
+                    if i != 1 {
+                        if primary.contains(i) {
+                            let xx = bodyPart.x - neckJoint.x
+                            let yy = bodyPart.y - neckJoint.y
+                            let cos_angle = xx / (sqrt( (pow(xx, 2) + pow(yy, 2) )))
+                            let angle = (acos(cos_angle) * 180 / CGFloat.pi)
+                            if i != 0 {
+                               testing[i-1] = Double(angle)
 
-// MARK: - Tap function to retrieve pixel information at a certain point
-extension UIImageView {
-    func getPixelColorAtPoint(point: CGPoint, sourceView: UIImageView) -> UIColor {
-        let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        let context = CGContext(data: pixel,
-                                width: 1,
-                                height: 1,
-                                bitsPerComponent: 8,
-                                bytesPerRow: 4,
-                                space: colorSpace,
-                                bitmapInfo: bitmapInfo.rawValue)
-        
-        context!.translateBy(x: -point.x, y: -point.y)
-        
-        
-        sourceView.layer.render(in: context!)
-        let color: UIColor = UIColor(red: CGFloat(pixel[0])/255.0,
-                                     green: CGFloat(pixel[1])/255.0,
-                                     blue: CGFloat(pixel[2])/255.0,
-                                     alpha: CGFloat(pixel[3])/255.0)
-        
-        pixel.deallocate()
-        return color
-    }
-}
-
-// MARK: - Function to output pixel data
-extension CGImage {
-    func pixelData() { //}-> [UInt8]? {
-        let dataSize = self.width * self.height * 4
-        var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let context = CGContext(data: &pixelData,
-                                width: Int(self.width),
-                                height: Int(self.height),
-                                bitsPerComponent: 8,
-                                bytesPerRow: 4 * Int(self.width),
-                                space: colorSpace,
-                                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-        context?.draw(self, in: CGRect(x: 0, y: 0, width: self.width, height: self.height))
-
-        for i in stride(from: pixelData.index(after: 1), to: pixelData.endIndex, by: 4){
-            pixelData[i] = 255 // the 255 replaces index 2 which is blue
-        }
-        print ("Width: \(self.width), Height: \(self.height)")
-        print ("Pixel Data: \(pixelData.prefix(12))")
-
-        //return (pixelData)
-    }
-}
-
-extension UIImage {
-    func resize(to newSize: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: newSize.width, height: newSize.height), true, 1.0)
-        self.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        
-        return resizedImage
-    }
-}
-
-// MARK: - Function to input camera CGImage, modify, and output UIImage
-extension ViewController {
-    func processByPixel(in image: CGImage?) -> UIImage? {
-        
-        guard let inputCGImage = image else { print("unable to get cgImage"); return nil }
-        let colorSpace       = CGColorSpaceCreateDeviceRGB()
-        let width            = inputCGImage.width
-        let height           = inputCGImage.height
-        let bytesPerPixel    = 4
-        let bitsPerComponent = 8
-        let bytesPerRow      = bytesPerPixel * width
-        let bitmapInfo       = RGBA32.bitmapInfo
-        
-        guard let context = CGContext(data: nil,
-                                      width: width,
-                                      height: height,
-                                      bitsPerComponent: bitsPerComponent,
-                                      bytesPerRow: bytesPerRow,
-                                      space: colorSpace,
-                                      bitmapInfo: bitmapInfo)
-            else {
-            print("Cannot create context!"); return nil
-        }
-        
-        context.draw(inputCGImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-        
-        guard let buffer = context.data else { print("Cannot get context data!"); return nil }
-        
-        let pixelBuffer = buffer.bindMemory(to: RGBA32.self, capacity: width * height)
-        
-                for row in 0 ..< Int(height/2) {
-                    for column in 0 ..< Int(width/2) {
-                        let offset = row * width + column
-                        if pixelBuffer[offset].blueComponent != 255 {
-                            //pixelBuffer[offset] = .blue
-                            pixelBuffer[offset].color = pixelBuffer[offset].color | (255 << 8)
+                            } else{
+                               testing[0] = Double(angle)
+                            }
+                        } else {
+                            if human.bodyParts[i] != nil {
+                                let first_joint = human.bodyParts[i]!
+                                let second_joint = human.bodyParts[i-1]!
+                                let xx = first_joint.x - second_joint.x
+                                let yy = first_joint.y - second_joint.y
+                                let cos_angle = xx / (sqrt( (pow(xx, 2) + pow(yy, 2) )))
+                                let angle = (acos(cos_angle) * 180 / CGFloat.pi)
+                                testing[i-1] = Double(angle)
+                            }
                         }
                     }
                 }
-        
-        let outputCGImage = context.makeImage()!
-        let outputImage = UIImage(cgImage: outputCGImage)
+                centers[i] = CGPoint(x: bodyPart.x, y: bodyPart.y)
+          }
+            
+            let weirdness = testing.allSatisfy({$0.isNaN})
+            if weirdness {
+                print ("It is all nan values")
+            } else {
+                 coor = testing
+            }
+            
+              for (pairOrder, (pair1,pair2)) in CocoPairsRender.enumerated() {
 
-        return outputImage
+                  if human.bodyParts.keys.firstIndex(of: pair1) == nil || human.bodyParts.keys.firstIndex(of: pair2) == nil {
+                      continue
+                  }
+                  if centers.index(forKey: pair1) != nil && centers.index(forKey: pair2) != nil{
+                      keypoint.append(Int32(pairOrder))
+                      pos.append(centers[pair1]!)
+                      pos.append(centers[pair2]!)
+                  }
+              }
+
+            let opencv = OpenCVWrapper()
+            let renderedImage = opencv.renderKeyPoint(CGRect(x: -60 , y: 171, width: 368, height: 368),
+                                                              keypoint: &keypoint,
+                                                              keypoint_size: Int32(keypoint.count),
+                                                              pos: &pos)
+            DispatchQueue.main.async {
+                self.jointViews.image = renderedImage
+                self.view.addSubview(self.jointViews)
+            }
+            
+        }
+//        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+//        print("Elapsed time is for rendering is \(timeElapsed) seconds.")
     }
-}
+
+    // MARK: - Postprocessing for XGBoost
+    func visionRequestDidComplete_xgboost(request: VNRequest, error: Error?) {
+//        xgbclassifier # 5 = cmu angles relative :: update 16/01/2020
+        
+        let model = xgbclassifier_openpose_angles_5()
+        
+        if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+            let heatmaps = observations.first?.featureValue.multiArrayValue {
+//            let pafmaps = observations[0].featureValue.multiArrayValue,
+//            let heatmaps = observations[1].featureValue.multiArrayValue {
+
+            let length = heatmaps.count
+            let doublePtr =  heatmaps.dataPointer.bindMemory(to: Double.self, capacity: length)
+            let doubleBuffer = UnsafeBufferPointer(start: doublePtr, count: length)
+            let mm = Array(doubleBuffer)
+            print("heatmaps \(mm.count)")
+            
+
+//            let paflength = pafmaps.count
+//            let pafdoublePtr =  pafmaps.dataPointer.bindMemory(to: Double.self, capacity: paflength)
+//            let pafdoubleBuffer = UnsafeBufferPointer(start: pafdoublePtr, count: paflength)
+//            let pafmm = Array(pafdoubleBuffer)
+//            print("pafmaps \(pafmm.count)")
+                
+            drawLine(mm)
+//           let timedResult = measure(drawLine(mm))
+//           print(timedResult.duration)
+//
+ //MARK: - XGBoost Classification Model
+            guard let output = try? model.prediction(f0: coor[0],
+                                                     f1: coor[1],
+                                                     f2: coor[2],
+                                                     f3: coor[3],
+                                                     f4: coor[4],
+                                                     f5: coor[5],
+                                                     f6: coor[6],
+                                                     f7: coor[7],
+                                                     f8: coor[8],
+                                                     f9: coor[9],
+                                                     f10: coor[10],
+                                                     f11: coor[11],
+                                                     f12: coor[12],
+                                                     f13: coor[13],
+                                                     f14: coor[14],
+                                                     f15: coor[15],
+                                                     f16: coor[16])
+                else {
+                fatalError("Unexpected runtime error.")
+                }
+//            guard let output = try? model2.prediction(conv2d_1_input__0: heatmaps)
+//            else {
+//            fatalError("Unexpected runtime error.")
+//            }
+
+                let pose = classNames[Int(output.target)]
+//                let prob = output.classProbability
+                print(coor)
+                print(pose)
+
+            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            print("Elapsed time for XGBoost is \(timeElapsed) seconds.")
+            
+            poseChecker.append(pose)
+            if poseChecker.capacity > 5 {
+                poseChecker.removeFirst()
+            }
+            print(poseChecker)
+            let allTheSame = poseChecker.allSatisfy({ $0 == pose })
+            if allTheSame == true {
+                verbalCorrection(pose:pose)
+            }
+            DispatchQueue.main.async {
+            self.identifierLabel.text = "\(pose)"}
+        } else {print ("observation request failed")}
+//            }
+    } // End of visionRequestxgboost
+    // MARK: - Postprocessing for CNN
+    func visionRequestDidComplete_cnn(request: VNRequest, error: Error?) {
+//        let model2 = mapClassifier_46x46_dim1()
+        let model2 = mapClassifier_46x46_dim1_97()
+        
+        if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+            let heatmaps = observations.first?.featureValue.multiArrayValue {
+
+            let length = heatmaps.count
+            let doublePtr =  heatmaps.dataPointer.bindMemory(to: Double.self, capacity: length)
+            let doubleBuffer = UnsafeBufferPointer(start: doublePtr, count: length)
+            let mm = Array(doubleBuffer)
+
+//            drawLine(mm)
+
+            let heatRows = 46
+            let heatColumns = 46
+
+            let singleImage = heatRows*heatColumns
+//            let separateLen = 19*heatRows*heatColumns
+//            let separateLen2 = 38*heatRows*heatColumns
+//
+//            let heatmapData = Array<Double>(mm[0..<separateLen])
+//            let pafX = Array<Double>(mm[separateLen..<separateLen2])
+//            let pafY = Array<Double>(mm[separateLen2..<mm.count])
+            
+            let keypoint_number = heatmaps.shape[0].intValue // 57
+//            let heatmap_w = heatmaps.shape[1].intValue // 46
+//            let heatmap_h = heatmaps.shape[2].intValue // 46
+            var summedArray = Array(repeating: 0.0, count: 2116)
+
+            for k in 0..<(keypoint_number) {
+                let oneImage = Array<Double>(mm[k*singleImage..<(k+1)*singleImage])
+//                print (oneImage.count)
+                summedArray = zip(summedArray, oneImage).map(+)
+            }
+//           summedArray = summedArray + summedArray + summedArray
+//            let opencv = OpenCVWrapper()
+//            opencv.matrixMin(
+//                &heatmapData,
+//                data_size: Int32(heatmapData.count),
+//                data_rows: 19,
+//                heat_rows: Int32(heatRows)
+//            )
+//            opencv.matrixMin(
+//                &pafX,
+//                data_size: Int32(pafX.count),
+//                data_rows: 19,
+//                heat_rows: Int32(heatRows)
+//            )
+//
+//            opencv.matrixMin(
+//                &pafY,
+//                data_size: Int32(pafY.count),
+//                data_rows: 19,
+//                heat_rows: Int32(heatRows)
+//            )
+            
+            // ------- LEFT OFF HERE ----------
+            // ------- LEFT OFF HERE ----------
+            // ------- LEFT OFF HERE ----------
+            // ------- LEFT OFF HERE ----------
+            
+//            let keypoint_number = heatmaps.shape[0].intValue // 57
+//            let heatmap_w = heatmaps.shape[1].intValue // 46
+//            let heatmap_h = heatmaps.shape[2].intValue // 46
+//
+//            var convertedHeatmap: Array<Array<Double>> = Array(repeating: Array(repeating: 0.0, count: heatmap_h), count: heatmap_w)
+//
+//            for k in 0..<(keypoint_number/3) {
+//                for i in 0..<heatmap_w {
+//                    for j in 0..<heatmap_h {
+//                        let index = k*(heatmap_w*heatmap_h) + i*(heatmap_h) + j
+//                        let confidence = heatmaps[index].doubleValue
+//                        convertedHeatmap[j][i] += confidence
+//                    }
+//                }
+//            }
+//        print(convertedHeatmap_array[0][0].count,convertedHeatmap_array[0][1].count,convertedHeatmap_array[0][2].count)
+//            let doublePtr_cnn = UnsafeMutablePointer<Double>.allocate(capacity: 2116)
+//            doublePtr_cnn.initialize(from: &summedArray, count: 2116)
+//            guard var finalSummedArray = try? MLMultiArray(dataPointer: doublePtr_cnn, shape: [46,46], dataType: MLMultiArrayDataType.double, strides: [46, 46, 1]) else {return}
+            guard let finalSummedArray = try? MLMultiArray(shape: [1,46,46], dataType: MLMultiArrayDataType.double) else {return}
+            for (index, element) in summedArray.enumerated() {
+                finalSummedArray[index] = NSNumber(floatLiteral: element)
+            }
+//            finalSummedArray = MLMultiArray(convertedHeatmap)
+//             for i in 0..<heatmap_w {
+//                 for j in 0..<heatmap_h {
+//                    let index = i*(heatmap_h) + j
+//                    finalSummedArray = NSNumber(floatLiteral: summedArray(index))
+//            print("print finalSummedArray:\((finalSummedArray))") }}
+//
+//           let timedResult = measure(drawLine(mm))
+//           print(timedResult.duration)
+//
+     //MARK: - CNN Classification Model
+        guard let output = try? model2.prediction(conv2d_1_input__0: finalSummedArray)
+            else {
+                fatalError("Unexpected runtime error.") }
+
+            let prediction = output.dense_2__Softmax__0
+            let doublePtr_cnn =  prediction.dataPointer.bindMemory(to: Double.self, capacity: 9)
+            let doubleBuffer_cnn = UnsafeBufferPointer(start: doublePtr_cnn, count: 9)
+            let prediction_cnn = Array(doubleBuffer_cnn)
+            let indexPose = prediction_cnn.firstIndex(of: prediction_cnn.max()!)!
+            let pose = classNames_cnn[indexPose]
+            print(pose)
+        
+        verbalCorrection(pose:pose)
+        DispatchQueue.main.async {
+            self.identifierLabel.text = "\(pose)" }
+    } else { print ("observation request failed") }
+        
+        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        print("Elapsed time for CNN is \(timeElapsed) seconds.")
+    } // End of CNN func
+
+// MARK: - Verbal Correction
+    func verbalCorrection(pose:String) {
+//            var startTime = CFAbsoluteTimeGetCurrent()
+        
+        for number in 0...8 {
+        if pose == classNames[number] {
+            var dict = [Int:Double]()
+            for i in 1...12 {
+                let present = coor[i]
+                let past = (correctPose[number])[i]
+                let threshold = Double(15)
+                if present - past > threshold {
+                    dict.updateValue(present - past, forKey: i)}
+                else if past - present > threshold {
+                    dict.updateValue(present - past, forKey: i)}
+            }
+            if dict.isEmpty {
+                speak("Your \(classNames[number]) is in perfect form.")
+            } else {
+                for i in 0...16 {
+                    var largest_angle = dict.values.max()!
+
+                    if largest_angle < (dict.values.min()! / -1.0) {
+                        largest_angle = (dict.values.min()!)}
+
+                    if dict[i] == largest_angle {
+                        if largest_angle.sign == .minus {
+                            if previousJoint != (verbalNeg[number])[i] {
+                                speak(previousJoint)}
+                            previousJoint = (verbalNeg[number])[i]
+                            print(previousJoint)
+                        } else if largest_angle.sign == .plus {
+                            if previousJoint != (verbalPos[number])[i] {
+                                speak(previousJoint)}
+                            previousJoint = (verbalPos[number])[i]
+                            print(previousJoint)
+                        }
+                    } else { continue }
+                }
+            }
+            print(dict)
+            }}
+            
+            
+//        if pose == classNames[7]{
+//            var dict = [Int:Double]()
+//            for i in 1...12 {
+//                let present = coor[i]
+//                let past = correctWarrior2[i]
+//                let threshold = Double(15)
+//                if present - past > threshold {
+//                    dict.updateValue(present - past, forKey: i)}
+//                else if past - present > threshold {
+//                    dict.updateValue(present - past, forKey: i)}
+//            }
+//            if dict.isEmpty{
+//                speak("Your \(classNames[7]) is in perfect form.")}
+//            else {
+//                for i in 0...16 {
+//                    var largest_angle = dict.values.max()!
+//
+//                    if largest_angle < (dict.values.min()! / -1.0) {
+//                        largest_angle = (dict.values.min()!)}
+//
+//                    if dict[i] == largest_angle {
+//                        if largest_angle.sign == .minus {
+//                            if previousJoint != verbalNegWarrior2[i] {
+//                                speak(previousJoint)}
+//                            previousJoint = verbalNegWarrior2[i]
+//                            print(previousJoint)
+//                        } else if largest_angle.sign == .plus {
+//                            if previousJoint != verbalWarrior2[i] {
+//                                speak(previousJoint)}
+//                            previousJoint = verbalWarrior2[i]
+//                            print(previousJoint)
+//                        }
+//                        
+//                    } else { continue }
+//                }
+//            }
+//            print(dict)
+////                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+////                print("Elapsed time for Verbal Correction is \(timeElapsed) seconds.")
+//        }
+//            } else {
+//            for i in 0...classNames.count {
+//                if pose == classNames[i]{
+//                    speak([(wait: 0.0, phrase: "You are now in \(i)")])}
+//                }
+//            }
+    } // End of Verbal func
     
+// MARK: - Pose Estimator Model
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        startTime = CFAbsoluteTimeGetCurrent()
+        guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        guard let poseEstimator = try? VNCoreMLModel(for: cmu().model) else {return}
+        let poseEstimatorRequest = VNCoreMLRequest(model: poseEstimator, completionHandler: visionRequestDidComplete_xgboost)
+        poseEstimatorRequest.imageCropAndScaleOption = .scaleFit
+        
+        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right)
+        try? handler.perform([poseEstimatorRequest])
+    
+    }
+    
+} // End of ViewController

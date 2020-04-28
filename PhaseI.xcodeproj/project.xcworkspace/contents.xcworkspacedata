@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
-   <Group
-      location = "absolute:/Users/lripa/Documents/PhaseI/PhaseI/Upsurge"
-      name = "Upsurge">
-   </Group>
    <FileRef
-      location = "self:PhaseI.xcodeproj">
+      location = "self:">
    </FileRef>
 </Workspace>

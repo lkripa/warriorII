@@ -12,9 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OpenCVWrapper : NSObject
 
-+ (NSString *)openCVVersionString;
-
 -(void) matrixMin: (double *) data
+        data_size:(int)data_size
+        data_rows:(int)data_rows
+        heat_rows:(int)heat_rows;
+
+-(void) matrixMax: (double *) data
         data_size:(int)data_size
         data_rows:(int)data_rows
         heat_rows:(int)heat_rows;
