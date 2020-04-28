@@ -6,9 +6,9 @@
 * Xcode 11.3
 
 ## Training Model
-*Pose Estimation
-*Pose Classificition
-*Pose Correction
+* Pose Estimation
+* Pose Classificition
+* Pose Correction
 
 ## Performance comparison
 
