@@ -7,19 +7,48 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8E21744F23E0F6A8004228A4 /* mapClassifier_46x46_dim1_97.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E21744E23E0F6A8004228A4 /* mapClassifier_46x46_dim1_97.mlmodel */; };
-		8E21745123E17FC4004228A4 /* mapClassifier_46x46_dim1_99.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E21745023E17FC4004228A4 /* mapClassifier_46x46_dim1_99.mlmodel */; };
-		8E39270823DB1D010096B185 /* xgbclassifier_openpose_angles_5.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E39270523DB1D010096B185 /* xgbclassifier_openpose_angles_5.mlmodel */; };
-		8E39270923DB1D010096B185 /* cmu.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E39270623DB1D010096B185 /* cmu.mlmodel */; };
-		8E39270A23DB1D010096B185 /* mapClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E39270723DB1D010096B185 /* mapClassifier.mlmodel */; };
-		8E39270C23DB22B80096B185 /* mapClassifier_46x46.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E39270B23DB22B80096B185 /* mapClassifier_46x46.mlmodel */; };
-		8E3E971B2417E9DA00BDB634 /* CorrectAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3E971A2417E9DA00BDB634 /* CorrectAngles.swift */; };
-		8E3E971D2417EA1B00BDB634 /* VerbalCorrections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3E971C2417EA1B00BDB634 /* VerbalCorrections.swift */; };
-		8E9B6C5C22E5E8DA0073EF2A /* PoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */; };
-		8E9B6C5E22E5E90E0073EF2A /* CocoPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C5D22E5E90E0073EF2A /* CocoPairs.swift */; };
+		8E52DBCB245864730067C80D /* VerbalCorrections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBC9245864730067C80D /* VerbalCorrections.swift */; };
+		8E52DBCC245864730067C80D /* CorrectAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCA245864730067C80D /* CorrectAngles.swift */; };
+		8E52DBD32458647B0067C80D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCE2458647B0067C80D /* Connection.swift */; };
+		8E52DBD42458647B0067C80D /* PoseEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCF2458647B0067C80D /* PoseEstimator.swift */; };
+		8E52DBD52458647B0067C80D /* Human.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBD02458647B0067C80D /* Human.swift */; };
+		8E52DBD62458647B0067C80D /* BodyPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBD12458647B0067C80D /* BodyPart.swift */; };
+		8E52DBD72458647B0067C80D /* CocoPairs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBD22458647B0067C80D /* CocoPairs.swift */; };
+		8E52DBDC245864FE0067C80D /* cmu.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBD9245864FE0067C80D /* cmu.mlmodel */; };
+		8E52DBDD245864FE0067C80D /* xgbclassifier_openpose_angles_5.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBDA245864FE0067C80D /* xgbclassifier_openpose_angles_5.mlmodel */; };
+		8E52DBFE245865A00067C80D /* Exponential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE0245865A00067C80D /* Exponential.swift */; };
+		8E52DBFF245865A00067C80D /* ComplexArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE1245865A00067C80D /* ComplexArithmetic.swift */; };
+		8E52DC00245865A00067C80D /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE2245865A00067C80D /* Arithmetic.swift */; };
+		8E52DC01245865A00067C80D /* PointerUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE3245865A00067C80D /* PointerUtilities.swift */; };
+		8E52DC02245865A00067C80D /* Auxiliary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE4245865A00067C80D /* Auxiliary.swift */; };
+		8E52DC03245865A00067C80D /* Tensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE5245865A00067C80D /* Tensor.swift */; };
+		8E52DC04245865A00067C80D /* ComplexArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE6245865A00067C80D /* ComplexArraySlice.swift */; };
+		8E52DC05245865A00067C80D /* ComplexArrayRealSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE7245865A00067C80D /* ComplexArrayRealSlice.swift */; };
+		8E52DC06245865A00067C80D /* TensorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE8245865A00067C80D /* TensorSlice.swift */; };
+		8E52DC07245865A00067C80D /* Span.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBE9245865A00067C80D /* Span.swift */; };
+		8E52DC08245865A00067C80D /* FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBEA245865A00067C80D /* FFT.swift */; };
+		8E52DC09245865A00067C80D /* MatrixSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBEB245865A00067C80D /* MatrixSlice.swift */; };
+		8E52DC0A245865A00067C80D /* LinearOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBEC245865A00067C80D /* LinearOperators.swift */; };
+		8E52DC0B245865A00067C80D /* Real.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBED245865A00067C80D /* Real.swift */; };
+		8E52DC0C245865A00067C80D /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBEE245865A00067C80D /* Sequence.swift */; };
+		8E52DC0D245865A00067C80D /* ComplexArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBEF245865A00067C80D /* ComplexArray.swift */; };
+		8E52DC0E245865A00067C80D /* MatrixArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF0245865A00067C80D /* MatrixArithmetic.swift */; };
+		8E52DC0F245865A00067C80D /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF1245865A00067C80D /* Interval.swift */; };
+		8E52DC10245865A00067C80D /* ValueArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF2245865A00067C80D /* ValueArray.swift */; };
+		8E52DC11245865A00067C80D /* TensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF3245865A00067C80D /* TensorType.swift */; };
+		8E52DC12245865A00067C80D /* DSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF4245865A00067C80D /* DSP.swift */; };
+		8E52DC13245865A00067C80D /* ValueArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF5245865A00067C80D /* ValueArraySlice.swift */; };
+		8E52DC14245865A00067C80D /* LinearType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF6245865A00067C80D /* LinearType.swift */; };
+		8E52DC15245865A00067C80D /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF7245865A00067C80D /* Complex.swift */; };
+		8E52DC16245865A00067C80D /* Trigonometric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF8245865A00067C80D /* Trigonometric.swift */; };
+		8E52DC17245865A00067C80D /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBF9245865A00067C80D /* Matrix.swift */; };
+		8E52DC18245865A00067C80D /* Hyperbolic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFA245865A00067C80D /* Hyperbolic.swift */; };
+		8E52DC19245865A00067C80D /* 2DTensorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFB245865A00067C80D /* 2DTensorSlice.swift */; };
+		8E52DC1A245865A00067C80D /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFC245865A00067C80D /* Value.swift */; };
+		8E52DC1B245865A00067C80D /* QuadraticType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFD245865A00067C80D /* QuadraticType.swift */; };
+		8E52DC1D245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */; };
 		8E9B6C6122E5F68F0073EF2A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E9B6C6022E5F68F0073EF2A /* opencv2.framework */; };
 		8E9B6C6722E5F78A0073EF2A /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */; };
-		8EB6762823DE02ED007AB33F /* mapClassifier_46x46_dim1.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8EB6762723DE02ED007AB33F /* mapClassifier_46x46_dim1.mlmodel */; };
 		8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */; };
 		8EBD62DB22D4E67E009F6FB1 /* ViewControllerB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62DA22D4E67E009F6FB1 /* ViewControllerB.swift */; };
 		8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */; };
@@ -29,61 +58,55 @@
 		8ED572A022DE060600FB2AD4 /* RBGA_struc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */; };
 		8ED572A222DE068A00FB2AD4 /* PixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */; };
 		8ED572A822DE15DB00FB2AD4 /* PixelMod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */; };
-		8EDA156723EE373600031E80 /* keras_openpose.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8EDA156623EE373600031E80 /* keras_openpose.mlmodel */; };
-		8EE35B2923EE23EC0082BD99 /* Exponential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B0B23EE23EC0082BD99 /* Exponential.swift */; };
-		8EE35B2A23EE23EC0082BD99 /* ComplexArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B0C23EE23EC0082BD99 /* ComplexArithmetic.swift */; };
-		8EE35B2B23EE23EC0082BD99 /* Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B0D23EE23EC0082BD99 /* Arithmetic.swift */; };
-		8EE35B2C23EE23EC0082BD99 /* PointerUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B0E23EE23EC0082BD99 /* PointerUtilities.swift */; };
-		8EE35B2D23EE23EC0082BD99 /* Auxiliary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B0F23EE23EC0082BD99 /* Auxiliary.swift */; };
-		8EE35B2E23EE23EC0082BD99 /* Tensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1023EE23EC0082BD99 /* Tensor.swift */; };
-		8EE35B2F23EE23EC0082BD99 /* ComplexArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1123EE23EC0082BD99 /* ComplexArraySlice.swift */; };
-		8EE35B3023EE23EC0082BD99 /* ComplexArrayRealSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1223EE23EC0082BD99 /* ComplexArrayRealSlice.swift */; };
-		8EE35B3123EE23EC0082BD99 /* TensorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1323EE23EC0082BD99 /* TensorSlice.swift */; };
-		8EE35B3223EE23EC0082BD99 /* Span.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1423EE23EC0082BD99 /* Span.swift */; };
-		8EE35B3323EE23EC0082BD99 /* FFT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1523EE23EC0082BD99 /* FFT.swift */; };
-		8EE35B3423EE23EC0082BD99 /* MatrixSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1623EE23EC0082BD99 /* MatrixSlice.swift */; };
-		8EE35B3523EE23EC0082BD99 /* LinearOperators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1723EE23EC0082BD99 /* LinearOperators.swift */; };
-		8EE35B3623EE23EC0082BD99 /* Real.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1823EE23EC0082BD99 /* Real.swift */; };
-		8EE35B3723EE23EC0082BD99 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1923EE23EC0082BD99 /* Sequence.swift */; };
-		8EE35B3823EE23EC0082BD99 /* ComplexArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1A23EE23EC0082BD99 /* ComplexArray.swift */; };
-		8EE35B3923EE23EC0082BD99 /* MatrixArithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1B23EE23EC0082BD99 /* MatrixArithmetic.swift */; };
-		8EE35B3A23EE23EC0082BD99 /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1C23EE23EC0082BD99 /* Interval.swift */; };
-		8EE35B3B23EE23EC0082BD99 /* ValueArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1D23EE23EC0082BD99 /* ValueArray.swift */; };
-		8EE35B3C23EE23EC0082BD99 /* TensorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1E23EE23EC0082BD99 /* TensorType.swift */; };
-		8EE35B3D23EE23EC0082BD99 /* DSP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B1F23EE23EC0082BD99 /* DSP.swift */; };
-		8EE35B3E23EE23EC0082BD99 /* ValueArraySlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2023EE23EC0082BD99 /* ValueArraySlice.swift */; };
-		8EE35B3F23EE23EC0082BD99 /* LinearType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2123EE23EC0082BD99 /* LinearType.swift */; };
-		8EE35B4023EE23EC0082BD99 /* Complex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2223EE23EC0082BD99 /* Complex.swift */; };
-		8EE35B4123EE23EC0082BD99 /* Trigonometric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2323EE23EC0082BD99 /* Trigonometric.swift */; };
-		8EE35B4223EE23EC0082BD99 /* Matrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2423EE23EC0082BD99 /* Matrix.swift */; };
-		8EE35B4323EE23EC0082BD99 /* Hyperbolic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2523EE23EC0082BD99 /* Hyperbolic.swift */; };
-		8EE35B4423EE23EC0082BD99 /* 2DTensorSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2623EE23EC0082BD99 /* 2DTensorSlice.swift */; };
-		8EE35B4523EE23EC0082BD99 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2723EE23EC0082BD99 /* Value.swift */; };
-		8EE35B4623EE23EC0082BD99 /* QuadraticType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE35B2823EE23EC0082BD99 /* QuadraticType.swift */; };
-		8EEA33BF2388192B009B3222 /* Human.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEA33BE2388192B009B3222 /* Human.swift */; };
-		8EEA33C1238819B4009B3222 /* BodyPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEA33C0238819B4009B3222 /* BodyPart.swift */; };
-		8EEA33C323881A17009B3222 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEA33C223881A17009B3222 /* Connection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8E21744E23E0F6A8004228A4 /* mapClassifier_46x46_dim1_97.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = mapClassifier_46x46_dim1_97.mlmodel; path = ../../mlmodels/mapClassifier_46x46_dim1_97.mlmodel; sourceTree = "<group>"; };
-		8E21745023E17FC4004228A4 /* mapClassifier_46x46_dim1_99.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = mapClassifier_46x46_dim1_99.mlmodel; path = ../../mlmodels/mapClassifier_46x46_dim1_99.mlmodel; sourceTree = "<group>"; };
 		8E3795922312F2E1002B9C76 /* PhaseI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhaseI-Bridging-Header.h"; sourceTree = "<group>"; };
-		8E39270523DB1D010096B185 /* xgbclassifier_openpose_angles_5.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = xgbclassifier_openpose_angles_5.mlmodel; path = ../../mlmodels/xgbclassifier_openpose_angles_5.mlmodel; sourceTree = "<group>"; };
-		8E39270623DB1D010096B185 /* cmu.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = cmu.mlmodel; path = ../../mlmodels/cmu.mlmodel; sourceTree = "<group>"; };
-		8E39270723DB1D010096B185 /* mapClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = mapClassifier.mlmodel; path = ../../mlmodels/mapClassifier.mlmodel; sourceTree = "<group>"; };
-		8E39270B23DB22B80096B185 /* mapClassifier_46x46.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = mapClassifier_46x46.mlmodel; path = ../../mlmodels/mapClassifier_46x46.mlmodel; sourceTree = "<group>"; };
-		8E3E971A2417E9DA00BDB634 /* CorrectAngles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorrectAngles.swift; sourceTree = "<group>"; };
-		8E3E971C2417EA1B00BDB634 /* VerbalCorrections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerbalCorrections.swift; sourceTree = "<group>"; };
 		8E52DB77245832870067C80D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PoseEstimator.swift; path = ../../../../../System/Volumes/Data/Users/lripa/Documents/PhaseI/PhaseI/PoseEstimator.swift; sourceTree = "<group>"; };
-		8E9B6C5D22E5E90E0073EF2A /* CocoPairs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CocoPairs.swift; path = ../../../../../System/Volumes/Data/Users/lripa/Documents/PhaseI/PhaseI/CocoPairs.swift; sourceTree = "<group>"; };
+		8E52DBC9245864730067C80D /* VerbalCorrections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerbalCorrections.swift; sourceTree = "<group>"; };
+		8E52DBCA245864730067C80D /* CorrectAngles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorrectAngles.swift; sourceTree = "<group>"; };
+		8E52DBCE2458647B0067C80D /* Connection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		8E52DBCF2458647B0067C80D /* PoseEstimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PoseEstimator.swift; sourceTree = "<group>"; };
+		8E52DBD02458647B0067C80D /* Human.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Human.swift; sourceTree = "<group>"; };
+		8E52DBD12458647B0067C80D /* BodyPart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyPart.swift; sourceTree = "<group>"; };
+		8E52DBD22458647B0067C80D /* CocoPairs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoPairs.swift; sourceTree = "<group>"; };
+		8E52DBD9245864FE0067C80D /* cmu.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = cmu.mlmodel; sourceTree = "<group>"; };
+		8E52DBDA245864FE0067C80D /* xgbclassifier_openpose_angles_5.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = xgbclassifier_openpose_angles_5.mlmodel; sourceTree = "<group>"; };
+		8E52DBE0245865A00067C80D /* Exponential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exponential.swift; sourceTree = "<group>"; };
+		8E52DBE1245865A00067C80D /* ComplexArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArithmetic.swift; sourceTree = "<group>"; };
+		8E52DBE2245865A00067C80D /* Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arithmetic.swift; sourceTree = "<group>"; };
+		8E52DBE3245865A00067C80D /* PointerUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointerUtilities.swift; sourceTree = "<group>"; };
+		8E52DBE4245865A00067C80D /* Auxiliary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auxiliary.swift; sourceTree = "<group>"; };
+		8E52DBE5245865A00067C80D /* Tensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tensor.swift; sourceTree = "<group>"; };
+		8E52DBE6245865A00067C80D /* ComplexArraySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArraySlice.swift; sourceTree = "<group>"; };
+		8E52DBE7245865A00067C80D /* ComplexArrayRealSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArrayRealSlice.swift; sourceTree = "<group>"; };
+		8E52DBE8245865A00067C80D /* TensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TensorSlice.swift; sourceTree = "<group>"; };
+		8E52DBE9245865A00067C80D /* Span.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Span.swift; sourceTree = "<group>"; };
+		8E52DBEA245865A00067C80D /* FFT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFT.swift; sourceTree = "<group>"; };
+		8E52DBEB245865A00067C80D /* MatrixSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixSlice.swift; sourceTree = "<group>"; };
+		8E52DBEC245865A00067C80D /* LinearOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearOperators.swift; sourceTree = "<group>"; };
+		8E52DBED245865A00067C80D /* Real.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Real.swift; sourceTree = "<group>"; };
+		8E52DBEE245865A00067C80D /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
+		8E52DBEF245865A00067C80D /* ComplexArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArray.swift; sourceTree = "<group>"; };
+		8E52DBF0245865A00067C80D /* MatrixArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixArithmetic.swift; sourceTree = "<group>"; };
+		8E52DBF1245865A00067C80D /* Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
+		8E52DBF2245865A00067C80D /* ValueArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueArray.swift; sourceTree = "<group>"; };
+		8E52DBF3245865A00067C80D /* TensorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TensorType.swift; sourceTree = "<group>"; };
+		8E52DBF4245865A00067C80D /* DSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DSP.swift; sourceTree = "<group>"; };
+		8E52DBF5245865A00067C80D /* ValueArraySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueArraySlice.swift; sourceTree = "<group>"; };
+		8E52DBF6245865A00067C80D /* LinearType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearType.swift; sourceTree = "<group>"; };
+		8E52DBF7245865A00067C80D /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
+		8E52DBF8245865A00067C80D /* Trigonometric.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trigonometric.swift; sourceTree = "<group>"; };
+		8E52DBF9245865A00067C80D /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
+		8E52DBFA245865A00067C80D /* Hyperbolic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hyperbolic.swift; sourceTree = "<group>"; };
+		8E52DBFB245865A00067C80D /* 2DTensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 2DTensorSlice.swift; sourceTree = "<group>"; };
+		8E52DBFC245865A00067C80D /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		8E52DBFD245865A00067C80D /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
+		8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = mapClassifier_46x46_dim1_97.mlmodel; sourceTree = "<group>"; };
 		8E9B6C6022E5F68F0073EF2A /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../System/Volumes/Data/Users/lripa/Downloads/opencv2.framework; sourceTree = "<group>"; };
-		8E9B6C6222E5F7240073EF2A /* PhaseI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhaseI-Bridging-Header.h"; sourceTree = "<group>"; };
 		8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		8E9B6CCB22E60A980073EF2A /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		8EB6762723DE02ED007AB33F /* mapClassifier_46x46_dim1.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = mapClassifier_46x46_dim1.mlmodel; path = ../../mlmodels/mapClassifier_46x46_dim1.mlmodel; sourceTree = "<group>"; };
 		8EBD62D522D4E67E009F6FB1 /* PhaseI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhaseI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8EBD62DA22D4E67E009F6FB1 /* ViewControllerB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerB.swift; sourceTree = "<group>"; };
@@ -95,40 +118,6 @@
 		8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBGA_struc.swift; sourceTree = "<group>"; };
 		8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelBuffer.swift; sourceTree = "<group>"; };
 		8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelMod.swift; sourceTree = "<group>"; };
-		8EDA156623EE373600031E80 /* keras_openpose.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = keras_openpose.mlmodel; sourceTree = "<group>"; };
-		8EE35B0B23EE23EC0082BD99 /* Exponential.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exponential.swift; sourceTree = "<group>"; };
-		8EE35B0C23EE23EC0082BD99 /* ComplexArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArithmetic.swift; sourceTree = "<group>"; };
-		8EE35B0D23EE23EC0082BD99 /* Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Arithmetic.swift; sourceTree = "<group>"; };
-		8EE35B0E23EE23EC0082BD99 /* PointerUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointerUtilities.swift; sourceTree = "<group>"; };
-		8EE35B0F23EE23EC0082BD99 /* Auxiliary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auxiliary.swift; sourceTree = "<group>"; };
-		8EE35B1023EE23EC0082BD99 /* Tensor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tensor.swift; sourceTree = "<group>"; };
-		8EE35B1123EE23EC0082BD99 /* ComplexArraySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArraySlice.swift; sourceTree = "<group>"; };
-		8EE35B1223EE23EC0082BD99 /* ComplexArrayRealSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArrayRealSlice.swift; sourceTree = "<group>"; };
-		8EE35B1323EE23EC0082BD99 /* TensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TensorSlice.swift; sourceTree = "<group>"; };
-		8EE35B1423EE23EC0082BD99 /* Span.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Span.swift; sourceTree = "<group>"; };
-		8EE35B1523EE23EC0082BD99 /* FFT.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FFT.swift; sourceTree = "<group>"; };
-		8EE35B1623EE23EC0082BD99 /* MatrixSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixSlice.swift; sourceTree = "<group>"; };
-		8EE35B1723EE23EC0082BD99 /* LinearOperators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearOperators.swift; sourceTree = "<group>"; };
-		8EE35B1823EE23EC0082BD99 /* Real.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Real.swift; sourceTree = "<group>"; };
-		8EE35B1923EE23EC0082BD99 /* Sequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
-		8EE35B1A23EE23EC0082BD99 /* ComplexArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplexArray.swift; sourceTree = "<group>"; };
-		8EE35B1B23EE23EC0082BD99 /* MatrixArithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatrixArithmetic.swift; sourceTree = "<group>"; };
-		8EE35B1C23EE23EC0082BD99 /* Interval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
-		8EE35B1D23EE23EC0082BD99 /* ValueArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueArray.swift; sourceTree = "<group>"; };
-		8EE35B1E23EE23EC0082BD99 /* TensorType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TensorType.swift; sourceTree = "<group>"; };
-		8EE35B1F23EE23EC0082BD99 /* DSP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DSP.swift; sourceTree = "<group>"; };
-		8EE35B2023EE23EC0082BD99 /* ValueArraySlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueArraySlice.swift; sourceTree = "<group>"; };
-		8EE35B2123EE23EC0082BD99 /* LinearType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinearType.swift; sourceTree = "<group>"; };
-		8EE35B2223EE23EC0082BD99 /* Complex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Complex.swift; sourceTree = "<group>"; };
-		8EE35B2323EE23EC0082BD99 /* Trigonometric.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Trigonometric.swift; sourceTree = "<group>"; };
-		8EE35B2423EE23EC0082BD99 /* Matrix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Matrix.swift; sourceTree = "<group>"; };
-		8EE35B2523EE23EC0082BD99 /* Hyperbolic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hyperbolic.swift; sourceTree = "<group>"; };
-		8EE35B2623EE23EC0082BD99 /* 2DTensorSlice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = 2DTensorSlice.swift; sourceTree = "<group>"; };
-		8EE35B2723EE23EC0082BD99 /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
-		8EE35B2823EE23EC0082BD99 /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
-		8EEA33BE2388192B009B3222 /* Human.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Human.swift; sourceTree = "<group>"; };
-		8EEA33C0238819B4009B3222 /* BodyPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyPart.swift; sourceTree = "<group>"; };
-		8EEA33C223881A17009B3222 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +132,74 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E52DBC8245864730067C80D /* Correction */ = {
+			isa = PBXGroup;
+			children = (
+				8E52DBC9245864730067C80D /* VerbalCorrections.swift */,
+				8E52DBCA245864730067C80D /* CorrectAngles.swift */,
+			);
+			path = Correction;
+			sourceTree = "<group>";
+		};
+		8E52DBCD2458647B0067C80D /* Detection */ = {
+			isa = PBXGroup;
+			children = (
+				8E52DBCE2458647B0067C80D /* Connection.swift */,
+				8E52DBCF2458647B0067C80D /* PoseEstimator.swift */,
+				8E52DBD02458647B0067C80D /* Human.swift */,
+				8E52DBD12458647B0067C80D /* BodyPart.swift */,
+				8E52DBD22458647B0067C80D /* CocoPairs.swift */,
+			);
+			path = Detection;
+			sourceTree = "<group>";
+		};
+		8E52DBD8245864FE0067C80D /* models */ = {
+			isa = PBXGroup;
+			children = (
+				8E52DBD9245864FE0067C80D /* cmu.mlmodel */,
+				8E52DBDA245864FE0067C80D /* xgbclassifier_openpose_angles_5.mlmodel */,
+				8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		8E52DBDF2458659F0067C80D /* Upsurge */ = {
+			isa = PBXGroup;
+			children = (
+				8E52DBE0245865A00067C80D /* Exponential.swift */,
+				8E52DBE1245865A00067C80D /* ComplexArithmetic.swift */,
+				8E52DBE2245865A00067C80D /* Arithmetic.swift */,
+				8E52DBE3245865A00067C80D /* PointerUtilities.swift */,
+				8E52DBE4245865A00067C80D /* Auxiliary.swift */,
+				8E52DBE5245865A00067C80D /* Tensor.swift */,
+				8E52DBE6245865A00067C80D /* ComplexArraySlice.swift */,
+				8E52DBE7245865A00067C80D /* ComplexArrayRealSlice.swift */,
+				8E52DBE8245865A00067C80D /* TensorSlice.swift */,
+				8E52DBE9245865A00067C80D /* Span.swift */,
+				8E52DBEA245865A00067C80D /* FFT.swift */,
+				8E52DBEB245865A00067C80D /* MatrixSlice.swift */,
+				8E52DBEC245865A00067C80D /* LinearOperators.swift */,
+				8E52DBED245865A00067C80D /* Real.swift */,
+				8E52DBEE245865A00067C80D /* Sequence.swift */,
+				8E52DBEF245865A00067C80D /* ComplexArray.swift */,
+				8E52DBF0245865A00067C80D /* MatrixArithmetic.swift */,
+				8E52DBF1245865A00067C80D /* Interval.swift */,
+				8E52DBF2245865A00067C80D /* ValueArray.swift */,
+				8E52DBF3245865A00067C80D /* TensorType.swift */,
+				8E52DBF4245865A00067C80D /* DSP.swift */,
+				8E52DBF5245865A00067C80D /* ValueArraySlice.swift */,
+				8E52DBF6245865A00067C80D /* LinearType.swift */,
+				8E52DBF7245865A00067C80D /* Complex.swift */,
+				8E52DBF8245865A00067C80D /* Trigonometric.swift */,
+				8E52DBF9245865A00067C80D /* Matrix.swift */,
+				8E52DBFA245865A00067C80D /* Hyperbolic.swift */,
+				8E52DBFB245865A00067C80D /* 2DTensorSlice.swift */,
+				8E52DBFC245865A00067C80D /* Value.swift */,
+				8E52DBFD245865A00067C80D /* QuadraticType.swift */,
+			);
+			path = Upsurge;
+			sourceTree = "<group>";
+		};
 		8E9B6C5F22E5F68F0073EF2A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -165,7 +222,6 @@
 			isa = PBXGroup;
 			children = (
 				8E52DB77245832870067C80D /* README.md */,
-				8E9B6C6222E5F7240073EF2A /* PhaseI-Bridging-Header.h */,
 				8E3795922312F2E1002B9C76 /* PhaseI-Bridging-Header.h */,
 				8EBD62D722D4E67E009F6FB1 /* PhaseI */,
 				8EBD62D622D4E67E009F6FB1 /* Products */,
@@ -184,26 +240,14 @@
 		8EBD62D722D4E67E009F6FB1 /* PhaseI */ = {
 			isa = PBXGroup;
 			children = (
-				8EE35B0A23EE23EC0082BD99 /* Upsurge */,
+				8E52DBDF2458659F0067C80D /* Upsurge */,
+				8E52DBD8245864FE0067C80D /* models */,
+				8E52DBCD2458647B0067C80D /* Detection */,
+				8E52DBC8245864730067C80D /* Correction */,
 				8E9B6CCA22E60A980073EF2A /* OpenCVFiles */,
 				8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */,
 				8ECDA10023870B3E00D1F8B8 /* ViewController.swift */,
-				8EDA156623EE373600031E80 /* keras_openpose.mlmodel */,
-				8E21745023E17FC4004228A4 /* mapClassifier_46x46_dim1_99.mlmodel */,
-				8E21744E23E0F6A8004228A4 /* mapClassifier_46x46_dim1_97.mlmodel */,
-				8E9B6C5B22E5E8DA0073EF2A /* PoseEstimator.swift */,
-				8E3E971A2417E9DA00BDB634 /* CorrectAngles.swift */,
-				8E3E971C2417EA1B00BDB634 /* VerbalCorrections.swift */,
-				8EEA33C223881A17009B3222 /* Connection.swift */,
-				8EEA33C0238819B4009B3222 /* BodyPart.swift */,
-				8EEA33BE2388192B009B3222 /* Human.swift */,
-				8E9B6C5D22E5E90E0073EF2A /* CocoPairs.swift */,
 				8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */,
-				8EB6762723DE02ED007AB33F /* mapClassifier_46x46_dim1.mlmodel */,
-				8E39270623DB1D010096B185 /* cmu.mlmodel */,
-				8E39270B23DB22B80096B185 /* mapClassifier_46x46.mlmodel */,
-				8E39270723DB1D010096B185 /* mapClassifier.mlmodel */,
-				8E39270523DB1D010096B185 /* xgbclassifier_openpose_angles_5.mlmodel */,
 				8EEA33B923880C03009B3222 /* UnusedFiles */,
 				8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */,
 				8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */,
@@ -211,43 +255,6 @@
 				8EBD62E422D4E680009F6FB1 /* Info.plist */,
 			);
 			path = PhaseI;
-			sourceTree = "<group>";
-		};
-		8EE35B0A23EE23EC0082BD99 /* Upsurge */ = {
-			isa = PBXGroup;
-			children = (
-				8EE35B0B23EE23EC0082BD99 /* Exponential.swift */,
-				8EE35B0C23EE23EC0082BD99 /* ComplexArithmetic.swift */,
-				8EE35B0D23EE23EC0082BD99 /* Arithmetic.swift */,
-				8EE35B0E23EE23EC0082BD99 /* PointerUtilities.swift */,
-				8EE35B0F23EE23EC0082BD99 /* Auxiliary.swift */,
-				8EE35B1023EE23EC0082BD99 /* Tensor.swift */,
-				8EE35B1123EE23EC0082BD99 /* ComplexArraySlice.swift */,
-				8EE35B1223EE23EC0082BD99 /* ComplexArrayRealSlice.swift */,
-				8EE35B1323EE23EC0082BD99 /* TensorSlice.swift */,
-				8EE35B1423EE23EC0082BD99 /* Span.swift */,
-				8EE35B1523EE23EC0082BD99 /* FFT.swift */,
-				8EE35B1623EE23EC0082BD99 /* MatrixSlice.swift */,
-				8EE35B1723EE23EC0082BD99 /* LinearOperators.swift */,
-				8EE35B1823EE23EC0082BD99 /* Real.swift */,
-				8EE35B1923EE23EC0082BD99 /* Sequence.swift */,
-				8EE35B1A23EE23EC0082BD99 /* ComplexArray.swift */,
-				8EE35B1B23EE23EC0082BD99 /* MatrixArithmetic.swift */,
-				8EE35B1C23EE23EC0082BD99 /* Interval.swift */,
-				8EE35B1D23EE23EC0082BD99 /* ValueArray.swift */,
-				8EE35B1E23EE23EC0082BD99 /* TensorType.swift */,
-				8EE35B1F23EE23EC0082BD99 /* DSP.swift */,
-				8EE35B2023EE23EC0082BD99 /* ValueArraySlice.swift */,
-				8EE35B2123EE23EC0082BD99 /* LinearType.swift */,
-				8EE35B2223EE23EC0082BD99 /* Complex.swift */,
-				8EE35B2323EE23EC0082BD99 /* Trigonometric.swift */,
-				8EE35B2423EE23EC0082BD99 /* Matrix.swift */,
-				8EE35B2523EE23EC0082BD99 /* Hyperbolic.swift */,
-				8EE35B2623EE23EC0082BD99 /* 2DTensorSlice.swift */,
-				8EE35B2723EE23EC0082BD99 /* Value.swift */,
-				8EE35B2823EE23EC0082BD99 /* QuadraticType.swift */,
-			);
-			path = Upsurge;
 			sourceTree = "<group>";
 		};
 		8EEA33B923880C03009B3222 /* UnusedFiles */ = {
@@ -332,58 +339,53 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EEA33BF2388192B009B3222 /* Human.swift in Sources */,
-				8E3E971B2417E9DA00BDB634 /* CorrectAngles.swift in Sources */,
-				8EE35B2923EE23EC0082BD99 /* Exponential.swift in Sources */,
-				8E21744F23E0F6A8004228A4 /* mapClassifier_46x46_dim1_97.mlmodel in Sources */,
-				8EE35B3623EE23EC0082BD99 /* Real.swift in Sources */,
+				8E52DC1B245865A00067C80D /* QuadraticType.swift in Sources */,
+				8E52DBD52458647B0067C80D /* Human.swift in Sources */,
+				8E52DC06245865A00067C80D /* TensorSlice.swift in Sources */,
+				8E52DC0E245865A00067C80D /* MatrixArithmetic.swift in Sources */,
+				8E52DC0C245865A00067C80D /* Sequence.swift in Sources */,
+				8E52DC18245865A00067C80D /* Hyperbolic.swift in Sources */,
 				8EBD62DB22D4E67E009F6FB1 /* ViewControllerB.swift in Sources */,
+				8E52DC0F245865A00067C80D /* Interval.swift in Sources */,
+				8E52DC01245865A00067C80D /* PointerUtilities.swift in Sources */,
+				8E52DC15245865A00067C80D /* Complex.swift in Sources */,
+				8E52DC10245865A00067C80D /* ValueArray.swift in Sources */,
+				8E52DC0A245865A00067C80D /* LinearOperators.swift in Sources */,
+				8E52DC1D245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel in Sources */,
+				8E52DC08245865A00067C80D /* FFT.swift in Sources */,
+				8E52DC03245865A00067C80D /* Tensor.swift in Sources */,
 				8E9B6C6722E5F78A0073EF2A /* OpenCVWrapper.mm in Sources */,
-				8EE35B3D23EE23EC0082BD99 /* DSP.swift in Sources */,
-				8EE35B4323EE23EC0082BD99 /* Hyperbolic.swift in Sources */,
-				8EDA156723EE373600031E80 /* keras_openpose.mlmodel in Sources */,
-				8E39270923DB1D010096B185 /* cmu.mlmodel in Sources */,
-				8EE35B4023EE23EC0082BD99 /* Complex.swift in Sources */,
+				8E52DBDC245864FE0067C80D /* cmu.mlmodel in Sources */,
+				8E52DC12245865A00067C80D /* DSP.swift in Sources */,
+				8E52DC0D245865A00067C80D /* ComplexArray.swift in Sources */,
+				8E52DBCB245864730067C80D /* VerbalCorrections.swift in Sources */,
+				8E52DC00245865A00067C80D /* Arithmetic.swift in Sources */,
+				8E52DC05245865A00067C80D /* ComplexArrayRealSlice.swift in Sources */,
 				8ED572A822DE15DB00FB2AD4 /* PixelMod.swift in Sources */,
-				8EE35B3C23EE23EC0082BD99 /* TensorType.swift in Sources */,
-				8EEA33C323881A17009B3222 /* Connection.swift in Sources */,
-				8EE35B4123EE23EC0082BD99 /* Trigonometric.swift in Sources */,
-				8EE35B2E23EE23EC0082BD99 /* Tensor.swift in Sources */,
-				8EE35B4423EE23EC0082BD99 /* 2DTensorSlice.swift in Sources */,
-				8EE35B4523EE23EC0082BD99 /* Value.swift in Sources */,
-				8EE35B4223EE23EC0082BD99 /* Matrix.swift in Sources */,
-				8EE35B3E23EE23EC0082BD99 /* ValueArraySlice.swift in Sources */,
-				8EE35B3023EE23EC0082BD99 /* ComplexArrayRealSlice.swift in Sources */,
+				8E52DC02245865A00067C80D /* Auxiliary.swift in Sources */,
+				8E52DBD72458647B0067C80D /* CocoPairs.swift in Sources */,
+				8E52DBFE245865A00067C80D /* Exponential.swift in Sources */,
+				8E52DC07245865A00067C80D /* Span.swift in Sources */,
+				8E52DC16245865A00067C80D /* Trigonometric.swift in Sources */,
 				8ED572A222DE068A00FB2AD4 /* PixelBuffer.swift in Sources */,
-				8EE35B2B23EE23EC0082BD99 /* Arithmetic.swift in Sources */,
-				8EE35B3B23EE23EC0082BD99 /* ValueArray.swift in Sources */,
-				8EE35B2F23EE23EC0082BD99 /* ComplexArraySlice.swift in Sources */,
-				8EE35B3523EE23EC0082BD99 /* LinearOperators.swift in Sources */,
-				8EE35B3823EE23EC0082BD99 /* ComplexArray.swift in Sources */,
-				8EE35B3923EE23EC0082BD99 /* MatrixArithmetic.swift in Sources */,
-				8E9B6C5E22E5E90E0073EF2A /* CocoPairs.swift in Sources */,
+				8E52DC19245865A00067C80D /* 2DTensorSlice.swift in Sources */,
+				8E52DC14245865A00067C80D /* LinearType.swift in Sources */,
+				8E52DC0B245865A00067C80D /* Real.swift in Sources */,
+				8E52DC09245865A00067C80D /* MatrixSlice.swift in Sources */,
 				8ECDA10123870B3E00D1F8B8 /* ViewController.swift in Sources */,
-				8E9B6C5C22E5E8DA0073EF2A /* PoseEstimator.swift in Sources */,
-				8EE35B3423EE23EC0082BD99 /* MatrixSlice.swift in Sources */,
-				8EE35B2C23EE23EC0082BD99 /* PointerUtilities.swift in Sources */,
-				8E21745123E17FC4004228A4 /* mapClassifier_46x46_dim1_99.mlmodel in Sources */,
+				8E52DBD32458647B0067C80D /* Connection.swift in Sources */,
 				8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */,
-				8EE35B3723EE23EC0082BD99 /* Sequence.swift in Sources */,
+				8E52DC17245865A00067C80D /* Matrix.swift in Sources */,
+				8E52DC04245865A00067C80D /* ComplexArraySlice.swift in Sources */,
 				8ED572A022DE060600FB2AD4 /* RBGA_struc.swift in Sources */,
-				8E39270C23DB22B80096B185 /* mapClassifier_46x46.mlmodel in Sources */,
-				8EE35B3A23EE23EC0082BD99 /* Interval.swift in Sources */,
-				8EE35B2D23EE23EC0082BD99 /* Auxiliary.swift in Sources */,
-				8EE35B3F23EE23EC0082BD99 /* LinearType.swift in Sources */,
-				8EE35B3223EE23EC0082BD99 /* Span.swift in Sources */,
-				8E39270A23DB1D010096B185 /* mapClassifier.mlmodel in Sources */,
-				8E39270823DB1D010096B185 /* xgbclassifier_openpose_angles_5.mlmodel in Sources */,
-				8EB6762823DE02ED007AB33F /* mapClassifier_46x46_dim1.mlmodel in Sources */,
-				8EE35B3123EE23EC0082BD99 /* TensorSlice.swift in Sources */,
-				8EE35B4623EE23EC0082BD99 /* QuadraticType.swift in Sources */,
-				8EE35B2A23EE23EC0082BD99 /* ComplexArithmetic.swift in Sources */,
-				8E3E971D2417EA1B00BDB634 /* VerbalCorrections.swift in Sources */,
-				8EE35B3323EE23EC0082BD99 /* FFT.swift in Sources */,
-				8EEA33C1238819B4009B3222 /* BodyPart.swift in Sources */,
+				8E52DC11245865A00067C80D /* TensorType.swift in Sources */,
+				8E52DBFF245865A00067C80D /* ComplexArithmetic.swift in Sources */,
+				8E52DBCC245864730067C80D /* CorrectAngles.swift in Sources */,
+				8E52DBD42458647B0067C80D /* PoseEstimator.swift in Sources */,
+				8E52DC13245865A00067C80D /* ValueArraySlice.swift in Sources */,
+				8E52DC1A245865A00067C80D /* Value.swift in Sources */,
+				8E52DBDD245864FE0067C80D /* xgbclassifier_openpose_angles_5.mlmodel in Sources */,
+				8E52DBD62458647B0067C80D /* BodyPart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
