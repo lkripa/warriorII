@@ -47,6 +47,7 @@
 		8E52DC1A245865A00067C80D /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFC245865A00067C80D /* Value.swift */; };
 		8E52DC1B245865A00067C80D /* QuadraticType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFD245865A00067C80D /* QuadraticType.swift */; };
 		8E52DC1D245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */; };
+		8E52DC1F24586C330067C80D /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E52DC1E24586C330067C80D /* LICENSE.txt */; };
 		8E9B6C6122E5F68F0073EF2A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E9B6C6022E5F68F0073EF2A /* opencv2.framework */; };
 		8E9B6C6722E5F78A0073EF2A /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */; };
 		8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */; };
@@ -103,6 +104,7 @@
 		8E52DBFC245865A00067C80D /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		8E52DBFD245865A00067C80D /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
 		8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = mapClassifier_46x46_dim1_97.mlmodel; sourceTree = "<group>"; };
+		8E52DC1E24586C330067C80D /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		8E9B6C6022E5F68F0073EF2A /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../System/Volumes/Data/Users/lripa/Downloads/opencv2.framework; sourceTree = "<group>"; };
 		8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
@@ -222,6 +224,7 @@
 			isa = PBXGroup;
 			children = (
 				8E52DB77245832870067C80D /* README.md */,
+				8E52DC1E24586C330067C80D /* LICENSE.txt */,
 				8E3795922312F2E1002B9C76 /* PhaseI-Bridging-Header.h */,
 				8EBD62D722D4E67E009F6FB1 /* PhaseI */,
 				8EBD62D622D4E67E009F6FB1 /* Products */,
@@ -326,6 +329,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E52DC1F24586C330067C80D /* LICENSE.txt in Resources */,
 				8EBD62E322D4E680009F6FB1 /* LaunchScreen.storyboard in Resources */,
 				8EBD62E022D4E680009F6FB1 /* Assets.xcassets in Resources */,
 				8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */,

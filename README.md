@@ -2,13 +2,11 @@
 
 ## Environment
 * iOS13
-* iPhone Model XS Max
 * Xcode 11.3
 
 ## Training Model
 * Pose Estimation
 * Pose Classificition
-* Pose Correction
 
 ## Performance comparison
 
@@ -24,9 +22,9 @@
 $ git clone https://github.com/lkripa/warriorII.git
 $ cd warriorII
 $ pod install
-$ curl -o SwiftOpenPose/Resources/MobileOpenPose.mlmodel \
-https://s3-ap-northeast-1.amazonaws.com/swiftopenpose/MobileOpenPose.mlmodel
+
 ```
+Download mlmodels for pose estimation and classification.
 
 ## Examples
 
@@ -34,14 +32,14 @@ https://s3-ap-northeast-1.amazonaws.com/swiftopenpose/MobileOpenPose.mlmodel
 ## Reference
 
 * [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
+* [iOS-OpenPose](https://github.com/eugenebokhan)
 * [SwiftOpenPose](https://github.com/infocom-tpo/SwiftOpenPose)
 * [tf-openpose](https://github.com/ildoonet/tf-openpose)
 * [OpenPose Caffe Model Convert to CoreML Model](https://gist.github.com/otmb/7b2e1caf3330b97c82dc217af5844ad5)
 
 
 ## License
-
-warriorII is available under the MIT license.
+Licensed under the terms of the [MIT license](LICENSE.txt).
 
 
 
