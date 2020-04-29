@@ -14,13 +14,13 @@
 ## Dependencies Library
 
 * [UpSurge](https://github.com/aleph7/Upsurge)
-* [OpenCV](https://opencv.org/releases.html)
+* [OpenCV Framework](https://opencv.org/releases.html)
 
 ## Installation
 
 ```
 $ git clone https://github.com/lkripa/warriorII.git
-$ cd warriorII
+$ cd PhaseI
 $ pod install
 
 ```

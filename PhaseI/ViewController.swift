@@ -13,16 +13,20 @@ import Vision
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var jointViews = UIImageView()
+    var timer = Timer()
     let queue = DispatchQueue(label: "videoQueue")
     var coor = [Double](repeating: Double.nan, count: (17))
-    var timer = Timer()
     var poseChecker = Array(repeating: "", count: 5)
     
     //MARK: - Class Names
-    let classNames = ["bridge", "chair", "plank", "standing", "tree", "triangle", "warrior1", "warrior2", "warrior3" ]
-    let classNames_cnn = ["plank", "tree", "warrior1", "warrior2", "chair", "bridge", "warrior3", "triangle", "standing"]
+    let classNames = ["bridge", "chair", "plank", "standing", "tree",
+                      "triangle", "warrior1", "warrior2", "warrior3" ]
+    let classNames_cnn = ["plank", "tree", "warrior1", "warrior2", "chair",
+                          "bridge", "warrior3", "triangle", "standing"]
     
     //MARK: - Functions
+    
+    //MARK: Label for Pose Classification
     let identifierLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .white
@@ -32,6 +36,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         return label
     }()
     
+    // MARK: Timer for Pipeline Measurements
     var startTime = CFAbsoluteTime()
     func measure <T> (_ timedFunction: @autoclosure () -> T) -> (result: T, duration: String) {
             let startTime = CFAbsoluteTimeGetCurrent()
@@ -40,6 +45,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return (result, "Elapsed time is \(timeElapsed) seconds.")
         }
     
+    //MARK: Speech Correction
     var previousJoint = String()
     let synth = AVSpeechSynthesizer()
     func speak(_ phrase: String) {
@@ -52,14 +58,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        cameraSetup()
-        setupJointView()
-        setupIdentifierConfidenceLabel()
-    }
-    
-     //MARK: - Capture Session
+    //MARK: - Capture Session
     func cameraSetup(){
         
         let captureSession = AVCaptureSession()
@@ -83,6 +82,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     // MARK: - Setups
+    
     fileprivate func setupIdentifierConfidenceLabel() {
         view.addSubview(identifierLabel)
         identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32).isActive = true
@@ -103,7 +103,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         DispatchQueue.main.async {
             self.jointViews.subviews.forEach({ $0.removeFromSuperview() })
         }
-//          var startTime = CFAbsoluteTimeGetCurrent()
+          // var startTime = CFAbsoluteTimeGetCurrent()
           let poseEst = PoseEstimator(368,368)
           let timedResult = measure(poseEst.estimate(mm))
           let humans = timedResult.result
@@ -181,13 +181,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
             
         }
-//        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-//        print("Elapsed time is for rendering is \(timeElapsed) seconds.")
+        // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        // print("Elapsed time is for rendering is \(timeElapsed) seconds.")
     }
 
     // MARK: - Postprocessing for XGBoost
     func visionRequestDidComplete_xgboost(request: VNRequest, error: Error?) {
-//        xgbclassifier # 5 = cmu angles relative :: update 16/01/2020
+        // xgbclassifier # 5 = cmu angles relative (update: 16/01/2020)
         
         let model = xgbclassifier_openpose_angles_5()
         
@@ -202,17 +202,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             let mm = Array(doubleBuffer)
             print("heatmaps \(mm.count)")
             
-
-//            let paflength = pafmaps.count
-//            let pafdoublePtr =  pafmaps.dataPointer.bindMemory(to: Double.self, capacity: paflength)
-//            let pafdoubleBuffer = UnsafeBufferPointer(start: pafdoublePtr, count: paflength)
-//            let pafmm = Array(pafdoubleBuffer)
-//            print("pafmaps \(pafmm.count)")
-                
             drawLine(mm)
-//           let timedResult = measure(drawLine(mm))
-//           print(timedResult.duration)
-//
+            // let timedResult = measure(drawLine(mm))
+            // print(timedResult.duration)
+
  //MARK: - XGBoost Classification Model
             guard let output = try? model.prediction(f0: coor[0],
                                                      f1: coor[1],
@@ -240,7 +233,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 //            }
 
                 let pose = classNames[Int(output.target)]
-//                let prob = output.classProbability
                 print(coor)
                 print(pose)
 
@@ -256,14 +248,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             if allTheSame == true {
                 verbalCorrection(pose:pose)
             }
+            
             DispatchQueue.main.async {
-            self.identifierLabel.text = "\(pose)"}
-        } else {print ("observation request failed")}
-//            }
+                self.identifierLabel.text = "\(pose)"
+            }
+        } else {
+            print("observation request failed")
+        }
     } // End of visionRequestxgboost
+    
     // MARK: - Postprocessing for CNN
     func visionRequestDidComplete_cnn(request: VNRequest, error: Error?) {
-//        let model2 = mapClassifier_46x46_dim1()
+        // let model2 = mapClassifier_46x46_dim1()
         let model2 = mapClassifier_46x46_dim1_97()
         
         if let observations = request.results as? [VNCoreMLFeatureValueObservation],
@@ -422,7 +418,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             print(dict)
             }}
             
-            
+// MARK: - For WARRIOR 2 Correction
+        
 //        if pose == classNames[7]{
 //            var dict = [Int:Double]()
 //            for i in 1...12 {
@@ -475,14 +472,22 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         startTime = CFAbsoluteTimeGetCurrent()
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-
-        guard let poseEstimator = try? VNCoreMLModel(for: cmu().model) else {return}
+        
+        // Load Pose Estimator Model and feed image through
+        guard let poseEstimator = try? VNCoreMLModel(for: cmu().model) else { return }
         let poseEstimatorRequest = VNCoreMLRequest(model: poseEstimator, completionHandler: visionRequestDidComplete_xgboost)
         poseEstimatorRequest.imageCropAndScaleOption = .scaleFit
         
         let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .right)
         try? handler.perform([poseEstimatorRequest])
     
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        cameraSetup()
+        setupJointView()
+        setupIdentifierConfidenceLabel()
     }
     
 } // End of ViewController
