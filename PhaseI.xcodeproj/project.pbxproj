@@ -48,6 +48,10 @@
 		8E52DC1B245865A00067C80D /* QuadraticType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFD245865A00067C80D /* QuadraticType.swift */; };
 		8E52DC1D245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */; };
 		8E52DC1F24586C330067C80D /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E52DC1E24586C330067C80D /* LICENSE.txt */; };
+		8E7A41892459A935002225D5 /* DrawingBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A41882459A935002225D5 /* DrawingBody.swift */; };
+		8E7A418B2459C119002225D5 /* CNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A418A2459C119002225D5 /* CNN.swift */; };
+		8E7A418F245AF7E9002225D5 /* selima.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E7A418E245AF7E9002225D5 /* selima.ttf */; };
+		8E7A4191245AF821002225D5 /* selima.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E7A4190245AF821002225D5 /* selima.otf */; };
 		8E9B6C6122E5F68F0073EF2A /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E9B6C6022E5F68F0073EF2A /* opencv2.framework */; };
 		8E9B6C6722E5F78A0073EF2A /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */; };
 		8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */; };
@@ -105,11 +109,15 @@
 		8E52DBFD245865A00067C80D /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
 		8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = mapClassifier_46x46_dim1_97.mlmodel; sourceTree = "<group>"; };
 		8E52DC1E24586C330067C80D /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		8E7A41882459A935002225D5 /* DrawingBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingBody.swift; sourceTree = "<group>"; };
+		8E7A418A2459C119002225D5 /* CNN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNN.swift; sourceTree = "<group>"; };
+		8E7A418E245AF7E9002225D5 /* selima.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = selima.ttf; sourceTree = "<group>"; };
+		8E7A4190245AF821002225D5 /* selima.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = selima.otf; sourceTree = "<group>"; };
 		8E9B6C6022E5F68F0073EF2A /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = ../../../../System/Volumes/Data/Users/lripa/Downloads/opencv2.framework; sourceTree = "<group>"; };
 		8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		8E9B6CCB22E60A980073EF2A /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
-		8EBD62D522D4E67E009F6FB1 /* PhaseI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhaseI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8EBD62D522D4E67E009F6FB1 /* yoga.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yoga.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8EBD62DA22D4E67E009F6FB1 /* ViewControllerB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerB.swift; sourceTree = "<group>"; };
 		8EBD62DD22D4E67E009F6FB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -151,6 +159,7 @@
 				8E52DBD02458647B0067C80D /* Human.swift */,
 				8E52DBD12458647B0067C80D /* BodyPart.swift */,
 				8E52DBD22458647B0067C80D /* CocoPairs.swift */,
+				8E7A41882459A935002225D5 /* DrawingBody.swift */,
 			);
 			path = Detection;
 			sourceTree = "<group>";
@@ -202,6 +211,15 @@
 			path = Upsurge;
 			sourceTree = "<group>";
 		};
+		8E7A4192245AF862002225D5 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8E7A4190245AF821002225D5 /* selima.otf */,
+				8E7A418E245AF7E9002225D5 /* selima.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		8E9B6C5F22E5F68F0073EF2A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -213,6 +231,7 @@
 		8E9B6CCA22E60A980073EF2A /* OpenCVFiles */ = {
 			isa = PBXGroup;
 			children = (
+				8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */,
 				8E9B6C6822E5F78C0073EF2A /* OpenCVWrapper.h */,
 				8E9B6C6622E5F78A0073EF2A /* OpenCVWrapper.mm */,
 				8E9B6CCB22E60A980073EF2A /* PrefixHeader.pch */,
@@ -235,7 +254,7 @@
 		8EBD62D622D4E67E009F6FB1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8EBD62D522D4E67E009F6FB1 /* PhaseI.app */,
+				8EBD62D522D4E67E009F6FB1 /* yoga.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -250,7 +269,7 @@
 				8E9B6CCA22E60A980073EF2A /* OpenCVFiles */,
 				8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */,
 				8ECDA10023870B3E00D1F8B8 /* ViewController.swift */,
-				8ED572A122DE068A00FB2AD4 /* PixelBuffer.swift */,
+				8E7A4192245AF862002225D5 /* fonts */,
 				8EEA33B923880C03009B3222 /* UnusedFiles */,
 				8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */,
 				8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */,
@@ -266,6 +285,7 @@
 				8EBD62DA22D4E67E009F6FB1 /* ViewControllerB.swift */,
 				8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */,
 				8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */,
+				8E7A418A2459C119002225D5 /* CNN.swift */,
 			);
 			path = UnusedFiles;
 			sourceTree = "<group>";
@@ -287,7 +307,7 @@
 			);
 			name = PhaseI;
 			productName = PhaseI;
-			productReference = 8EBD62D522D4E67E009F6FB1 /* PhaseI.app */;
+			productReference = 8EBD62D522D4E67E009F6FB1 /* yoga.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -333,6 +353,8 @@
 				8EBD62E322D4E680009F6FB1 /* LaunchScreen.storyboard in Resources */,
 				8EBD62E022D4E680009F6FB1 /* Assets.xcassets in Resources */,
 				8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */,
+				8E7A4191245AF821002225D5 /* selima.otf in Resources */,
+				8E7A418F245AF7E9002225D5 /* selima.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,7 +371,9 @@
 				8E52DC0E245865A00067C80D /* MatrixArithmetic.swift in Sources */,
 				8E52DC0C245865A00067C80D /* Sequence.swift in Sources */,
 				8E52DC18245865A00067C80D /* Hyperbolic.swift in Sources */,
+				8E7A41892459A935002225D5 /* DrawingBody.swift in Sources */,
 				8EBD62DB22D4E67E009F6FB1 /* ViewControllerB.swift in Sources */,
+				8E7A418B2459C119002225D5 /* CNN.swift in Sources */,
 				8E52DC0F245865A00067C80D /* Interval.swift in Sources */,
 				8E52DC01245865A00067C80D /* PointerUtilities.swift in Sources */,
 				8E52DC15245865A00067C80D /* Complex.swift in Sources */,
@@ -547,7 +571,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = lripa.PhaseI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = yoga;
 				SWIFT_OBJC_BRIDGING_HEADER = "PhaseI-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -571,7 +595,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = lripa.PhaseI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = yoga;
 				SWIFT_OBJC_BRIDGING_HEADER = "PhaseI-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
