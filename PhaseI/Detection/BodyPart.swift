@@ -11,11 +11,11 @@ import Foundation
 // class for joint body parts
 open class BodyPart {
     
-    var uidx: String // number of uniquely identified part (from one image)
-    var partIdx: Int // enum part number
+    var uidx: String // number of uniquely identified connection (from one image)
+    var partIdx: Int // enum joint number; part index(eg. 0 for nose)
     var x: CGFloat // x-coordinate in percentage
     var y: CGFloat // y-coordinate in percentage
-    var score: Double // confidence of part identification
+    var score: Double // confidence score of part identification
     var name: String // return name of body part and information
     
     init(_ uidx: String,_ partIdx: Int,_ x: CGFloat,_ y: CGFloat,_ score: Double){

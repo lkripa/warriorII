@@ -156,9 +156,9 @@
 		8E52DBCD2458647B0067C80D /* Detection */ = {
 			isa = PBXGroup;
 			children = (
-				8E52DBCE2458647B0067C80D /* Connection.swift */,
 				8E52DBCF2458647B0067C80D /* PoseEstimator.swift */,
 				8E52DBD02458647B0067C80D /* Human.swift */,
+				8E52DBCE2458647B0067C80D /* Connection.swift */,
 				8E52DBD12458647B0067C80D /* BodyPart.swift */,
 				8E52DBD22458647B0067C80D /* CocoPairs.swift */,
 				8E7A41882459A935002225D5 /* DrawingBody.swift */,

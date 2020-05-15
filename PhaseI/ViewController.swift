@@ -12,11 +12,11 @@ import Vision
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    var jointViews = UIImageView()
+    var jointViews = UIImageView() // skeletal rendering view
     var timer = Timer()
     let queue = DispatchQueue(label: "videoQueue")
-    var coor = [Double](repeating: Double.nan, count: (17))
-    var poseChecker = Array(repeating: "", count: 5)
+    var coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
+    var poseChecker = Array(repeating: "", count: 5) // check if pose was detected 5 times sequentially
     
     //MARK: - Class Names
     let classNames = ["bridge", "chair", "plank", "standing", "tree",

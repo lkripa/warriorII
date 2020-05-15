@@ -8,17 +8,16 @@
 
 import Foundation
 
-// TODO: COMMENT
 public struct Connection {
-    var score: Double
-    var partIdx1: Int
-    var partIdx2: Int
-    var idx1: Int
-    var idx2: Int
-    var coord1: (CGFloat,CGFloat)
-    var coord2: (CGFloat,CGFloat)
-    var score1: Double
-    var score2: Double
+    var score: Double // confidence score of two coordinates for pair
+    var partIdx1: Int // enum joint 1 number
+    var partIdx2: Int // enum joint 2 number
+    var idx1: Int // part 1 identification number of this image
+    var idx2: Int // part 2 identification number of this image
+    var coord1: (CGFloat, CGFloat) //x-, y-coordinates of joint 1
+    var coord2: (CGFloat, CGFloat) //x-, y-coordinates of joint 2
+    var score1: Double // confidence score 1 of part identification
+    var score2: Double // confidences score 2 of part identification
     
     init(score: Double,
          partIdx1: Int,partIdx2: Int,
