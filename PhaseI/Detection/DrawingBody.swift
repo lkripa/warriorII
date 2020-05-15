@@ -8,14 +8,15 @@
 
 import Foundation
 
+// calculate angles between joint pairs
 func calculateAngles(_ xx: CGFloat, _ yy: CGFloat) -> CGFloat {
     let cos_angle = xx / (sqrt( (pow(xx, 2) + pow(yy, 2) )))
     let angle = (acos(cos_angle) * 180 / CGFloat.pi)
     return angle
 }
 
+// rendering skeleton on screen and calculating relative joint angles
 func drawingBody(_ mm: Array<Double>) -> ([Int32], [CGPoint], [Double]) {
-    
     var keypoint = [Int32]()
     var pos = [CGPoint]()
     var coor = [Double](repeating: Double.nan, count: (17)) // array later fed into pose classifier

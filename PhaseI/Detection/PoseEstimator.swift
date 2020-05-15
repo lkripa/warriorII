@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: COMMENT
 open class PoseEstimator {
     init(_ imageWidth: Int,_ imageHeight: Int){
         heatRows = imageWidth / 8

@@ -8,6 +8,7 @@
 
 import UIKit
 
+// have UIColor read RBGA
 public extension UIColor {
     class func rgb(_ r: Int,_ g: Int,_ b: Int) -> UIColor{
         return UIColor(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: 1)
@@ -30,6 +31,7 @@ public extension UIColor {
     }
 }
 
+// labels of joint parts
 public enum CocoPart: Int {
     case Nose = 0
     case Neck = 1
@@ -52,16 +54,22 @@ public enum CocoPart: Int {
     case Background = 18
 }
 
+// connections between joints
 public let CocoPairs = [
     (1, 2), (1, 5), (2, 3), (3, 4), (5, 6), (6, 7), (1, 8), (8, 9), (9, 10), (1, 11),
     (11, 12), (12, 13), (1, 0), (0, 14), (14, 16), (0, 15), (15, 17), (2, 16), (5, 17)
 ]
+
+// render the lines between the pairs except for the shoulder to ear pairs for both sides.
 public let CocoPairsRender = CocoPairs[0..<CocoPairs.count-2]
+
+// skeletal pairs count as even numbers. Refer to CocoPairs Image in Unused Files.
 public let CocoPairsNetwork = [
     (12, 13), (20, 21), (14, 15), (16, 17), (22, 23), (24, 25), (0, 1), (2, 3), (4, 5),
     (6, 7), (8, 9), (10, 11), (28, 29), (30, 31), (34, 35), (32, 33), (36, 37), (18, 19), (26, 27)
 ] // 19
 
+// Colors of Visual skeleton
 public let CocoColors = [UIColor.rgb(255, 0, 0),  UIColor.rgb(255, 85, 0), UIColor.rgb(255, 170, 0),UIColor.rgb(255, 255, 0),
                   UIColor.rgb(170, 255, 0),UIColor.rgb(85, 255, 0), UIColor.rgb(0, 255, 0),  UIColor.rgb(0, 255, 85),
                   UIColor.rgb(0, 255, 170),UIColor.rgb(0, 255, 255),UIColor.rgb(0, 170, 255),UIColor.rgb(0, 85, 255),

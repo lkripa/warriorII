@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: COMMENT
 public struct Connection {
     var score: Double
     var partIdx1: Int

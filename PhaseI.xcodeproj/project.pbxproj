@@ -48,6 +48,7 @@
 		8E52DC1B245865A00067C80D /* QuadraticType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBFD245865A00067C80D /* QuadraticType.swift */; };
 		8E52DC1D245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */; };
 		8E52DC1F24586C330067C80D /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8E52DC1E24586C330067C80D /* LICENSE.txt */; };
+		8E6ED8A8246EDC8B00394604 /* CocoImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6ED8A7246EDC8B00394604 /* CocoImage.png */; };
 		8E7A41892459A935002225D5 /* DrawingBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A41882459A935002225D5 /* DrawingBody.swift */; };
 		8E7A418B2459C119002225D5 /* CNN.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7A418A2459C119002225D5 /* CNN.swift */; };
 		8E7A418F245AF7E9002225D5 /* selima.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E7A418E245AF7E9002225D5 /* selima.ttf */; };
@@ -109,6 +110,7 @@
 		8E52DBFD245865A00067C80D /* QuadraticType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuadraticType.swift; sourceTree = "<group>"; };
 		8E52DC1C245865FA0067C80D /* mapClassifier_46x46_dim1_97.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = mapClassifier_46x46_dim1_97.mlmodel; sourceTree = "<group>"; };
 		8E52DC1E24586C330067C80D /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		8E6ED8A7246EDC8B00394604 /* CocoImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = CocoImage.png; path = PhaseI/UnusedFiles/CocoImage.png; sourceTree = SOURCE_ROOT; };
 		8E7A41882459A935002225D5 /* DrawingBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingBody.swift; sourceTree = "<group>"; };
 		8E7A418A2459C119002225D5 /* CNN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNN.swift; sourceTree = "<group>"; };
 		8E7A418E245AF7E9002225D5 /* selima.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = selima.ttf; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */,
 				8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */,
 				8E7A418A2459C119002225D5 /* CNN.swift */,
+				8E6ED8A7246EDC8B00394604 /* CocoImage.png */,
 			);
 			path = UnusedFiles;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E52DC1F24586C330067C80D /* LICENSE.txt in Resources */,
+				8E6ED8A8246EDC8B00394604 /* CocoImage.png in Resources */,
 				8EBD62E322D4E680009F6FB1 /* LaunchScreen.storyboard in Resources */,
 				8EBD62E022D4E680009F6FB1 /* Assets.xcassets in Resources */,
 				8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */,

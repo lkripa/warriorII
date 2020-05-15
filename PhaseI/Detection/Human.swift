@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: COMMENT
 open class Human {
     
     var pairs : [Connection]
