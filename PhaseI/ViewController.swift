@@ -16,7 +16,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var timer = Timer()
     let queue = DispatchQueue(label: "videoQueue")
     var coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
-    var poseChecker = Array(repeating: "", count: 5) // check if pose was detected 5 times sequentially
+    var poseChecker = Array(repeating: "", count: 3) // check if pose was detected 3 times sequentially
+    var selectedPose = Int()
+    let captureSession = AVCaptureSession()
+    var previewLayer = AVCaptureVideoPreviewLayer()
+    let button = UIButton(frame: CGRect(x: 300, y: 200, width: 300, height: 70))
+    var isPoseCorrect = false
     
     //MARK: - Class Names
     let classNames = ["bridge", "chair", "plank", "standing", "tree",
@@ -59,9 +64,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     //MARK: - Capture Session
-    func cameraSetup(){
-        
-        let captureSession = AVCaptureSession()
+    func cameraSetup() {
         captureSession.sessionPreset = .photo
         captureSession.sessionPreset = .vga640x480
         
@@ -69,17 +72,15 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         captureSession.addInput(input)
         
-        captureSession.startRunning()
+//        captureSession.startRunning()
         
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         view.layer.addSublayer(previewLayer)
-        view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
         previewLayer.frame = view.frame
         
         let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.setSampleBufferDelegate(self, queue: queue)
         captureSession.addOutput(dataOutput)
-        
     }
     
     // MARK: - Setups
@@ -97,6 +98,41 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.view.addSubview(jointViews)
         jointViews.frame = CGRect(x: -60 , y: 171, width: 551, height: 551)
         jointViews.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+    }
+    
+    func reset(){
+        coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
+        poseChecker = Array(repeating: "", count: 3)
+        
+        self.previewLayer.isHidden = false
+        self.jointViews.isHidden = false
+        view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
+    }
+    @objc func buttonAction(sender: UIButton!){
+        print(classNames[7])
+        isPoseCorrect = false
+        selectedPose = 7
+        reset()
+        
+        captureSession.startRunning()
+        self.button.removeFromSuperview()
+    }
+    
+    fileprivate func setupButtonView(){
+//        let screenRect = UIScreen.main.bounds // get your window screen size
+//        let coverView = UIView(frame: screenRect) //create a new view with the same size
+//        coverView.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!).withAlphaComponent(0.6)
+//        self.view.addSubview(coverView) // add this new view to your main view
+        button.backgroundColor = UIColor.red.withAlphaComponent(0.6)
+        button.setTitle("Warrior II (right)", for: .normal)
+        button.titleLabel?.font = UIFont(name: "selima", size: 42)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+
+        let verticalCenter: CGFloat = UIScreen.main.bounds.size.height / 2.0
+        let horizonalCenter: CGFloat = UIScreen.main.bounds.size.width / 2.0
+        button.center = CGPoint(x: horizonalCenter, y: verticalCenter)
+        
+        self.view.addSubview(button)
     }
     
     // MARK: - Skeletal Rendering
@@ -150,18 +186,20 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             else { fatalError("Unexpected runtime error.") }
             
             // print out classified pose
-            let pose = classNames[Int(output.target)]
+            var pose = classNames[Int(output.target)]
+            if coor.allSatisfy( {$0.isNaN} ) {
+                pose = "Waiting for Pose"
+            }
             print()
             print("=====", pose, "=====")
             print("angles:", coor)
-            
-
+           
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             print("Elapsed time for XGBoost is \(timeElapsed) seconds.")
             
-            // check if classified pose is constant for 5 images for a verbal correction
+            // check if classified pose is constant for 3 images for a verbal correction
             poseChecker.append(pose)
-            if poseChecker.capacity > 5 {
+            if poseChecker.capacity > 3 {
                 poseChecker.removeFirst()
             }
             print("poseChecker:", poseChecker)
@@ -172,6 +210,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             
             DispatchQueue.main.async {
                 self.identifierLabel.text = "\(pose)"
+                if self.isPoseCorrect == true {
+                    self.identifierLabel.text = "Waiting for Pose"
+                }
             }
         } else {
             print("vision observation request failed")
@@ -181,43 +222,66 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 // MARK: - Verbal Correction
     func verbalCorrection(pose:String) {
         // var startTime = CFAbsoluteTimeGetCurrent()
-        for number in 0...8 {
-            if pose == classNames[number] {
+        if isPoseCorrect == false {
+            if pose == classNames[selectedPose] {
                 var dict = [Int:Double]()
                 for i in 1...12 {
                     let present = coor[i]
-                    let past = (correctPose[number])[i]
+                    let past = (correctPose[selectedPose])[i]
                     let threshold = Double(15)
                     if present - past > threshold {
-                        dict.updateValue(present - past, forKey: i)}
-                    else if past - present > threshold {
-                        dict.updateValue(present - past, forKey: i)}
+                        dict.updateValue(present - past, forKey: i)
+                        
+                    } else if past - present > threshold {
+                        dict.updateValue(present - past, forKey: i)
+                    }
                 }
+                
+                // if there are no errors larger than 15 degrees, it is in perfect form
                 if dict.isEmpty {
-                    speak("Your \(classNames[number]) is in perfect form.")
+                    if self.synth.isSpeaking == false {
+                        isPoseCorrect = true
+                        speak("Your \(classNames[selectedPose]) is in perfect form.")
+                    }
                 } else {
+                    // find the biggest error in the joint angles and say correction
                     for i in 0...16 {
                         var largest_angle = dict.values.max()!
+                        
+                        // keep the largest absolute angle difference
+                        if largest_angle < abs(dict.values.min()!) {
+                            largest_angle = (dict.values.min()!)
+                        }
 
-                        if largest_angle < (dict.values.min()! / -1.0) {
-                            largest_angle = (dict.values.min()!)}
-
+                        // verbal corrections if the correction movement is up or down
                         if dict[i] == largest_angle {
                             if largest_angle.sign == .minus {
-                                if previousJoint != (verbalNeg[number])[i] {
+                                if previousJoint != (verbalNeg[selectedPose])[i] {
                                     speak(previousJoint)}
-                                previousJoint = (verbalNeg[number])[i]
+                                previousJoint = (verbalNeg[selectedPose])[i]
                                 print(previousJoint)
                             } else if largest_angle.sign == .plus {
-                                if previousJoint != (verbalPos[number])[i] {
-                                    speak(previousJoint)}
-                                previousJoint = (verbalPos[number])[i]
+                                if previousJoint != (verbalPos[selectedPose])[i] {
+                                    speak(previousJoint)
+                                }
+                                previousJoint = (verbalPos[selectedPose])[i]
                                 print(previousJoint)
                             }
                         } else { continue }
                     }
                 }
                 print(dict)
+                }
+        } else {
+            speak("Your \(classNames[selectedPose]) was perfect.")
+            stopSession()
+            DispatchQueue.main.async {
+                self.previewLayer.isHidden = true
+                self.jointViews.isHidden = true
+                self.identifierLabel.text = "Waiting for Pose"
+                self.view.backgroundColor = UIColor.white
+                self.setupButtonView()
+                
             }
         }
             
@@ -250,25 +314,19 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 //                            previousJoint = verbalNegWarrior2[i]
 //                            print(previousJoint)
 //                        } else if largest_angle.sign == .plus {
-//                            if previousJoint != verbalWarrior2[i] {
+//                            if previousJoint != verbalPosWarrior2[i] {
 //                                speak(previousJoint)}
-//                            previousJoint = verbalWarrior2[i]
+//                            previousJoint = verbalPosWarrior2[i]
 //                            print(previousJoint)
 //                        }
-//                        
+//
 //                    } else { continue }
 //                }
 //            }
 //            print(dict)
-////                let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-////                print("Elapsed time for Verbal Correction is \(timeElapsed) seconds.")
+//                 // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+//                // print("Elapsed time for Verbal Correction is \(timeElapsed) seconds.")
 //        }
-//            } else {
-//            for i in 0...classNames.count {
-//                if pose == classNames[i]{
-//                    speak([(wait: 0.0, phrase: "You are now in \(i)")])}
-//                }
-//            }
     } // End of Verbal func
     
 // MARK: - Pose Estimator Model
@@ -286,11 +344,23 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     }
     
+    func stopSession() {
+        if captureSession.isRunning {
+            DispatchQueue.global().async {
+                self.captureSession.stopRunning()
+                
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         cameraSetup()
         setupJointView()
+        setupButtonView()
         setupIdentifierConfidenceLabel()
+        self.previewLayer.isHidden = true
+        self.view.backgroundColor = UIColor.white
     }
     
 } // End of ViewController
