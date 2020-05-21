@@ -18,10 +18,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
     var poseChecker = Array(repeating: "", count: 3) // check if pose was detected 3 times sequentially
     var selectedPose = Int()
-    let captureSession = AVCaptureSession()
-    var previewLayer = AVCaptureVideoPreviewLayer()
-    let button = UIButton(frame: CGRect(x: 300, y: 200, width: 300, height: 70))
-    var isPoseCorrect = false
+    let captureSession = AVCaptureSession() // set up camera capture
+    var previewLayer = AVCaptureVideoPreviewLayer() // camera image layer
+    let button = UIButton(frame: CGRect(x: 300, y: 200, width: 300, height: 70)) // button for hoem screen
+    var isPoseCorrect = false //command for ending verbal correction
     
     //MARK: - Class Names
     let classNames = ["bridge", "chair", "plank", "standing", "tree",
@@ -72,8 +72,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         captureSession.addInput(input)
         
-//        captureSession.startRunning()
-        
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         view.layer.addSublayer(previewLayer)
         previewLayer.frame = view.frame
@@ -85,6 +83,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     // MARK: - Setups
     
+    // label on the bottom of screen view setup
     fileprivate func setupIdentifierConfidenceLabel() {
         view.addSubview(identifierLabel)
         identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -118).isActive = true
@@ -94,12 +93,14 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.identifierLabel.text = "Waiting for Pose"
     }
     
+    // skeletal joint view sestup
     fileprivate func setupJointView(){
         self.view.addSubview(jointViews)
         jointViews.frame = CGRect(x: -60 , y: 171, width: 551, height: 551)
         jointViews.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
     }
     
+    // app reset for a new pose correction and start correction mode
     func reset(){
         coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
         poseChecker = Array(repeating: "", count: 3)
@@ -108,6 +109,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.jointViews.isHidden = false
         view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
     }
+    
+    // button for selecting a pose and starting camera session
     @objc func buttonAction(sender: UIButton!){
         print(classNames[7])
         isPoseCorrect = false
@@ -118,11 +121,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.button.removeFromSuperview()
     }
     
+    // add button view
     fileprivate func setupButtonView(){
-//        let screenRect = UIScreen.main.bounds // get your window screen size
-//        let coverView = UIView(frame: screenRect) //create a new view with the same size
-//        coverView.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!).withAlphaComponent(0.6)
-//        self.view.addSubview(coverView) // add this new view to your main view
+        // let screenRect = UIScreen.main.bounds // get your window screen size
+        // let coverView = UIView(frame: screenRect) //create a new view with the same size
+        // coverView.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!).withAlphaComponent(0.6)
+        // self.view.addSubview(coverView) // add this new view to your main view
+        
         button.backgroundColor = UIColor.red.withAlphaComponent(0.6)
         button.setTitle("Warrior II (right)", for: .normal)
         button.titleLabel?.font = UIFont(name: "selima", size: 42)
@@ -160,7 +165,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
 
     // MARK: - Postprocessing for XGBoost
     func visionRequestDidComplete_xgboost(request: VNRequest, error: Error?) {
-        // xgbclassifier_openpose_angles_5 = cmu model angles relative to parent (update: 16/01/2020)
+        // NOTE: xgbclassifier_openpose_angles_5 = cmu model angles relative to parent (update: 16/01/2020)
         
         let model = xgbclassifier_openpose_angles_5()
         
@@ -239,6 +244,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 
                 // if there are no errors larger than 15 degrees, it is in perfect form
                 if dict.isEmpty {
+                    // check if talking, and pose is in perfect form and verbal command is spoken for the correction to stop
                     if self.synth.isSpeaking == false {
                         isPoseCorrect = true
                         speak("Your \(classNames[selectedPose]) is in perfect form.")
@@ -273,16 +279,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 print(dict)
                 }
         } else {
-            speak("Your \(classNames[selectedPose]) was perfect.")
             stopSession()
-            DispatchQueue.main.async {
-                self.previewLayer.isHidden = true
-                self.jointViews.isHidden = true
-                self.identifierLabel.text = "Waiting for Pose"
-                self.view.backgroundColor = UIColor.white
-                self.setupButtonView()
-                
-            }
         }
             
 // MARK: - Only WARRIOR 2 Correction
@@ -344,12 +341,20 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     }
     
+    // stop camera session and reset view to button selection
     func stopSession() {
         if captureSession.isRunning {
             DispatchQueue.global().async {
                 self.captureSession.stopRunning()
-                
             }
+        }
+        DispatchQueue.main.async {
+            self.previewLayer.isHidden = true
+            self.jointViews.isHidden = true
+            self.identifierLabel.text = "Waiting for Pose"
+            self.view.backgroundColor = UIColor.white
+            self.setupButtonView()
+            
         }
     }
     
@@ -359,6 +364,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         setupJointView()
         setupButtonView()
         setupIdentifierConfidenceLabel()
+        
+        // start of app, camera is hidden and background is white
         self.previewLayer.isHidden = true
         self.view.backgroundColor = UIColor.white
     }
