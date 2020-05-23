@@ -68,13 +68,14 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureSession.sessionPreset = .photo
         captureSession.sessionPreset = .vga640x480
         
-        guard let captureDevice = AVCaptureDevice.default(for: .video) else { return }
+        guard let captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else { return }
+        
         guard let input = try? AVCaptureDeviceInput(device: captureDevice) else { return }
         captureSession.addInput(input)
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         view.layer.addSublayer(previewLayer)
-        previewLayer.frame = view.frame
+        previewLayer.frame = view.bounds // view.frame
         
         let dataOutput = AVCaptureVideoDataOutput()
         dataOutput.setSampleBufferDelegate(self, queue: queue)
@@ -93,11 +94,31 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.identifierLabel.text = "Waiting for Pose"
     }
     
-    // skeletal joint view sestup
+    // skeletal joint view setup
     fileprivate func setupJointView(){
+        jointViews.transform = CGAffineTransform(scaleX: -1, y: 1) // mirror the image if using .front camera
         self.view.addSubview(jointViews)
-        jointViews.frame = CGRect(x: -60 , y: 171, width: 551, height: 551)
+        jointViews.frame = CGRect(x: -60 , y: 170, width: 551, height: 551)
         jointViews.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+    }
+    
+    // button view setup
+    fileprivate func setupButtonView(){
+        // let screenRect = UIScreen.main.bounds // get your window screen size
+        // let coverView = UIView(frame: screenRect) //create a new view with the same size
+        // coverView.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!).withAlphaComponent(0.6)
+        // self.view.addSubview(coverView) // add this new view to your main view
+        
+        button.backgroundColor = UIColor.red.withAlphaComponent(0.6)
+        button.setTitle("Warrior II (right)", for: .normal)
+        button.titleLabel?.font = UIFont(name: "selima", size: 42)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+
+        let verticalCenter: CGFloat = UIScreen.main.bounds.size.height / 2.0
+        let horizonalCenter: CGFloat = UIScreen.main.bounds.size.width / 2.0
+        button.center = CGPoint(x: horizonalCenter, y: verticalCenter)
+        
+        self.view.addSubview(button)
     }
     
     // app reset for a new pose correction and start correction mode
@@ -119,25 +140,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         captureSession.startRunning()
         self.button.removeFromSuperview()
-    }
-    
-    // add button view
-    fileprivate func setupButtonView(){
-        // let screenRect = UIScreen.main.bounds // get your window screen size
-        // let coverView = UIView(frame: screenRect) //create a new view with the same size
-        // coverView.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!).withAlphaComponent(0.6)
-        // self.view.addSubview(coverView) // add this new view to your main view
-        
-        button.backgroundColor = UIColor.red.withAlphaComponent(0.6)
-        button.setTitle("Warrior II (right)", for: .normal)
-        button.titleLabel?.font = UIFont(name: "selima", size: 42)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-
-        let verticalCenter: CGFloat = UIScreen.main.bounds.size.height / 2.0
-        let horizonalCenter: CGFloat = UIScreen.main.bounds.size.width / 2.0
-        button.center = CGPoint(x: horizonalCenter, y: verticalCenter)
-        
-        self.view.addSubview(button)
     }
     
     // MARK: - Skeletal Rendering
@@ -170,11 +172,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let model = xgbclassifier_openpose_angles_5()
         
         if let observations = request.results as? [VNCoreMLFeatureValueObservation], let heatmaps = observations.first?.featureValue.multiArrayValue {
+            
             // take the output MLMultiArray() and convert to Array()
             let length = heatmaps.count
             let doublePtr =  heatmaps.dataPointer.bindMemory(to: Double.self, capacity: length)
             let doubleBuffer = UnsafeBufferPointer(start: doublePtr, count: length)
             let mm = Array(doubleBuffer)
+            
             // draw skeleton onto screen
             drawLine(mm)
             
@@ -331,7 +335,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         startTime = CFAbsoluteTimeGetCurrent()
         guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         
-        // Load Pose Estimator Model and feed image through
+        // load Pose Estimator Model and feed image through
         guard let poseEstimator = try? VNCoreMLModel(for: cmu().model) else { return }
         let poseEstimatorRequest = VNCoreMLRequest(model: poseEstimator, completionHandler: visionRequestDidComplete_xgboost)
         poseEstimatorRequest.imageCropAndScaleOption = .scaleFit
