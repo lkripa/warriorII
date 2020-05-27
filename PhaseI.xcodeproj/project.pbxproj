@@ -574,7 +574,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = lripa.PhaseI;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lkripa.PhaseI;
 				PRODUCT_NAME = yoga;
 				SWIFT_OBJC_BRIDGING_HEADER = "PhaseI-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -598,7 +598,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = lripa.PhaseI;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lkripa.PhaseI;
 				PRODUCT_NAME = yoga;
 				SWIFT_OBJC_BRIDGING_HEADER = "PhaseI-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

@@ -6,6 +6,8 @@
 //  Copyright © 2019 Lara Riparip. All rights reserved.
 //
 
+// TODO: Check Verbal output of left/right/stance smaller
+
 import UIKit
 import AVKit
 import Vision
@@ -13,6 +15,8 @@ import Vision
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var jointViews = UIImageView() // skeletal rendering view
+    var correctJointView = UIImageView() // correct skeleton in top right corner
+    var imageView = UIImageView() // intro background view
     var timer = Timer()
     let queue = DispatchQueue(label: "videoQueue")
     var coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
@@ -22,10 +26,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var previewLayer = AVCaptureVideoPreviewLayer() // camera image layer
     let button = UIButton(frame: CGRect(x: 300, y: 200, width: 300, height: 70)) // button for hoem screen
     var isPoseCorrect = false //command for ending verbal correction
-    
+
     //MARK: - Class Names
-    let classNames = ["bridge", "chair", "plank", "standing", "tree",
-                      "triangle", "warrior1", "warrior2", "warrior3" ]
+    let classNames     = ["bridge", "chair", "plank", "standing", "tree",
+                          "triangle", "warrior1", "warrior2", "warrior3" ]
     let classNames_cnn = ["plank", "tree", "warrior1", "warrior2", "chair",
                           "bridge", "warrior3", "triangle", "standing"]
     
@@ -36,7 +40,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let label = UILabel()
         label.textAlignment = .center
         label.textColor = .darkGray
-        label.font = UIFont(name: "selima", size: 42)
+        label.numberOfLines = 2
+        label.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        label.font = UIFont(name: "selima", size: 72)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -44,11 +50,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     // MARK: Timer for Pipeline Measurements
     var startTime = CFAbsoluteTime()
     func measure <T> (_ timedFunction: @autoclosure () -> T) -> (result: T, duration: String) {
-            let startTime = CFAbsoluteTimeGetCurrent()
-            let result = timedFunction()
-            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-            return (result, "Elapsed time is \(timeElapsed) seconds.")
-        }
+        let startTime = CFAbsoluteTimeGetCurrent()
+        let result = timedFunction()
+        let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+        return (result, "Elapsed time is \(timeElapsed) seconds.")
+    }
     
     //MARK: Speech Correction
     var previousJoint = String()
@@ -75,6 +81,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         view.layer.addSublayer(previewLayer)
+        previewLayer.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1)) // mirror the image if using .front camera
         previewLayer.frame = view.bounds // view.frame
         
         let dataOutput = AVCaptureVideoDataOutput()
@@ -84,32 +91,59 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     // MARK: - Setups
     
-    // label on the bottom of screen view setup
+    // label on the top of screen view during start
     fileprivate func setupIdentifierConfidenceLabel() {
         view.addSubview(identifierLabel)
-        identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -118).isActive = true
-        identifierLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        identifierLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        identifierLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        self.identifierLabel.text = "Waiting for Pose"
+        identifierLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 102).isActive = true
+        identifierLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
+        identifierLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        identifierLabel.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        
+        identifierLabel.text = "Choose your yoga pose"
+        identifierLabel.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+        identifierLabel.font = UIFont(name: "selima", size: 72)
+    }
+    
+    // label on the bottom of screen view during correction setup
+    fileprivate func moveIdentifierConfidenceLabel() {
+        view.addSubview(identifierLabel)
+        identifierLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40).isActive = true
+        identifierLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0).isActive = true
+        identifierLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0).isActive = true
+        
+        identifierLabel.text = "Waiting for Pose"
+        identifierLabel.backgroundColor = UIColor.white.withAlphaComponent(0)
+        identifierLabel.font = UIFont(name: "selima", size: 52)
     }
     
     // skeletal joint view setup
     fileprivate func setupJointView(){
-        jointViews.transform = CGAffineTransform(scaleX: -1, y: 1) // mirror the image if using .front camera
         self.view.addSubview(jointViews)
         jointViews.frame = CGRect(x: -60 , y: 170, width: 551, height: 551)
-        jointViews.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+    }
+    
+    // skeletal joint view setup in the top right corner of camera view
+    fileprivate func setupCorrectJointView(){
+        self.view.addSubview(correctJointView)
+//        correctJointView.backgroundColor = UIColor.red.withAlphaComponent(0.6)
+        correctJointView.frame = CGRect(x: 280 , y: 135, width: 150, height: 150)
+    }
+    
+    // intro view setup
+    fileprivate func setupBackground(){
+        self.view.addSubview(imageView)
+        self.view.sendSubviewToBack(imageView)
+        imageView.image = UIImage(named: "PinkAndPeach.png")
+        imageView.frame = view.frame
+        imageView.contentMode = UIView.ContentMode.scaleAspectFill
     }
     
     // button view setup
     fileprivate func setupButtonView(){
-        // let screenRect = UIScreen.main.bounds // get your window screen size
-        // let coverView = UIView(frame: screenRect) //create a new view with the same size
-        // coverView.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!).withAlphaComponent(0.6)
-        // self.view.addSubview(coverView) // add this new view to your main view
-        
-        button.backgroundColor = UIColor.red.withAlphaComponent(0.6)
+        self.view.addSubview(button)
+        button.layer.cornerRadius = 15.0
+        button.layer.borderWidth = 1.0
+        button.backgroundColor = UIColor.red.withAlphaComponent(0.4)
         button.setTitle("Warrior II (right)", for: .normal)
         button.titleLabel?.font = UIFont(name: "selima", size: 42)
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
@@ -117,20 +151,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let verticalCenter: CGFloat = UIScreen.main.bounds.size.height / 2.0
         let horizonalCenter: CGFloat = UIScreen.main.bounds.size.width / 2.0
         button.center = CGPoint(x: horizonalCenter, y: verticalCenter)
-        
-        self.view.addSubview(button)
     }
-    
-    // app reset for a new pose correction and start correction mode
-    func reset(){
-        coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
-        poseChecker = Array(repeating: "", count: 3)
-        
-        self.previewLayer.isHidden = false
-        self.jointViews.isHidden = false
-        view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
-    }
-    
+
     // button for selecting a pose and starting camera session
     @objc func buttonAction(sender: UIButton!){
         print(classNames[7])
@@ -138,8 +160,38 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         selectedPose = 7
         reset()
         
-        captureSession.startRunning()
+        //setup camera correction screen
+        drawCorrectSkeleton()
         self.button.removeFromSuperview()
+        self.identifierLabel.removeFromSuperview()
+        captureSession.startRunning()
+        moveIdentifierConfidenceLabel()
+    }
+    // app reset for a new pose correction and start correction mode
+    func reset(){
+        coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
+        poseChecker = Array(repeating: "", count: 3)
+        
+        self.previewLayer.isHidden = false
+        self.jointViews.isHidden = false
+        self.correctJointView.isHidden = false
+        self.imageView.removeFromSuperview()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
+    }
+    
+    // starting screen: camera view is hidden and intro background is setup
+    func setupInital(){
+        self.previewLayer.isHidden = true
+        self.jointViews.isHidden = true
+        self.correctJointView.isHidden = true
+        self.setupButtonView()
+        self.setupBackground()
+        self.setupIdentifierConfidenceLabel()
+    }
+    
+    // move to starting screen
+    func restart(){
+        
     }
     
     // MARK: - Skeletal Rendering
@@ -150,12 +202,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // var startTime = CFAbsoluteTimeGetCurrent()
         var (keypoint, pos, testing) = drawingBody(mm)
         coor = testing
-        
+        print(keypoint, pos)
         let opencv = OpenCVWrapper()
         let renderedImage = opencv.renderKeyPoint(CGRect(x: -60 , y: 171, width: 368, height: 368),
-                                                              keypoint: &keypoint,
-                                                              keypoint_size: Int32(keypoint.count),
-                                                              pos: &pos)
+                                                  keypoint: &keypoint,
+                                                  keypoint_size: Int32(keypoint.count),
+                                                  pos: &pos)
         DispatchQueue.main.async {
             self.jointViews.image = renderedImage
             self.view.addSubview(self.jointViews)
@@ -164,6 +216,60 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
         // print("Elapsed time is for rendering is \(timeElapsed) seconds.")
     }
+    
+    // MARK: - Skeletal Rendering
+    func drawCorrectSkeleton() {
+        let opencv = OpenCVWrapper()
+        var keypoint = [Int32]()
+        var pos = [CGPoint]()
+        keypoint = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        pos = [CGPoint(x: 0.5434782608695652, y: 0.5),
+               CGPoint(x: 0.4782608695652174, y: 0.5),
+               CGPoint(x: 0.5434782608695652, y: 0.5),
+               CGPoint(x: 0.6086956521739131, y: 0.5),
+               CGPoint(x: 0.4782608695652174, y: 0.5),
+               CGPoint(x: 0.3695652173913043, y: 0.5),
+               CGPoint(x: 0.3695652173913043, y: 0.5),
+               CGPoint(x: 0.2391304347826087, y: 0.5),
+               CGPoint(x: 0.6086956521739131, y: 0.5),
+               CGPoint(x: 0.717391304347826, y: 0.5),
+               CGPoint(x: 0.717391304347826, y: 0.5),
+               CGPoint(x: 0.7826086956521738, y: 0.5),
+               CGPoint(x: 0.5434782608695652, y: 0.5),
+               CGPoint(x: 0.4782608695652174, y: 0.717391304347826),
+               CGPoint(x: 0.4782608695652174, y: 0.717391304347826),
+               CGPoint(x: 0.30434782608695654, y: 0.8043478260869565),
+               CGPoint(x: 0.30434782608695654, y: 0.8043478260869565),
+               CGPoint(x: 0.30434782608695654, y: 0.9782608695652174),
+               CGPoint(x: 0.5434782608695652, y: 0.5),
+               CGPoint(x: 0.5869565217391304, y: 0.7391304347826086),
+               CGPoint(x: 0.5869565217391304, y: 0.7391304347826086),
+               CGPoint(x: 0.717391304347826, y: 0.8695652173913043),
+               CGPoint(x: 0.717391304347826, y: 0.8695652173913043),
+               CGPoint(x: 0.8260869565217391, y: 0.9782608695652174),
+               CGPoint(x: 0.5434782608695652, y: 0.5),
+               CGPoint(x: 0.5434782608695652, y: 0.43478260869565216),
+               CGPoint(x: 0.5434782608695652, y: 0.43478260869565216),
+               CGPoint(x: 0.5217391304347826, y: 0.41304347826086957),
+               CGPoint(x: 0.5217391304347826, y: 0.41304347826086957),
+               CGPoint(x: 0.5, y: 0.41304347826086957),
+               CGPoint(x: 0.5434782608695652, y: 0.43478260869565216),
+               CGPoint(x: 0.5434782608695652, y: 0.41304347826086957),
+               CGPoint(x: 0.5434782608695652, y: 0.41304347826086957),
+               CGPoint(x: 0.5869565217391304, y: 0.41304347826086957)
+        ]
+    
+        
+        let renderedImage = opencv.renderKeyPoint(CGRect(x: 0 , y: 0, width: 368, height: 368),
+                                                 keypoint: &keypoint,
+                                                 keypoint_size: Int32(keypoint.count),
+                                                 pos: &pos)
+        DispatchQueue.main.async {
+           self.correctJointView.image = renderedImage
+           self.view.addSubview(self.correctJointView)
+        }
+
+    }
 
     // MARK: - Postprocessing for XGBoost
     func visionRequestDidComplete_xgboost(request: VNRequest, error: Error?) {
@@ -171,7 +277,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         let model = xgbclassifier_openpose_angles_5()
         
-        if let observations = request.results as? [VNCoreMLFeatureValueObservation], let heatmaps = observations.first?.featureValue.multiArrayValue {
+        if let observations = request.results as? [VNCoreMLFeatureValueObservation],
+            let heatmaps = observations.first?.featureValue.multiArrayValue {
             
             // take the output MLMultiArray() and convert to Array()
             let length = heatmaps.count
@@ -212,7 +319,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 poseChecker.removeFirst()
             }
             print("poseChecker:", poseChecker)
-            let allTheSame = poseChecker.allSatisfy({ $0 == pose })
+            let allTheSame = poseChecker.allSatisfy({ $0 == classNames[selectedPose] })
             if allTheSame == true {
                 verbalCorrection(pose:pose)
             }
@@ -220,9 +327,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             DispatchQueue.main.async {
                 self.identifierLabel.text = "\(pose)"
                 if self.isPoseCorrect == true {
-                    self.identifierLabel.text = "Waiting for Pose"
+                    self.identifierLabel.text = "Choose your yoga pose"
                 }
             }
+            
         } else {
             print("vision observation request failed")
         }
@@ -252,6 +360,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     if self.synth.isSpeaking == false {
                         isPoseCorrect = true
                         speak("Your \(classNames[selectedPose]) is in perfect form.")
+                        print("Your \(classNames[selectedPose]) is in perfect form.")
                     }
                 } else {
                     // find the biggest error in the joint angles and say correction
@@ -352,13 +461,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 self.captureSession.stopRunning()
             }
         }
+        
+        // starting screen setup
         DispatchQueue.main.async {
-            self.previewLayer.isHidden = true
-            self.jointViews.isHidden = true
-            self.identifierLabel.text = "Waiting for Pose"
-            self.view.backgroundColor = UIColor.white
-            self.setupButtonView()
-            
+            self.identifierLabel.removeFromSuperview()
+            self.setupInital()
         }
     }
     
@@ -366,12 +473,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         super.viewDidLoad()
         cameraSetup()
         setupJointView()
-        setupButtonView()
-        setupIdentifierConfidenceLabel()
-        
-        // start of app, camera is hidden and background is white
-        self.previewLayer.isHidden = true
-        self.view.backgroundColor = UIColor.white
+        setupCorrectJointView()
+        setupInital() // start of app, camera view is hidden
     }
     
 } // End of ViewController
