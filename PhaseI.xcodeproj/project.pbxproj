@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E0ACFA0247EBE6F00C3D69F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E0ACF9F247EBE6F00C3D69F /* Assets.xcassets */; };
 		8E52DBCB245864730067C80D /* VerbalCorrections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBC9245864730067C80D /* VerbalCorrections.swift */; };
 		8E52DBCC245864730067C80D /* CorrectAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCA245864730067C80D /* CorrectAngles.swift */; };
 		8E52DBD32458647B0067C80D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCE2458647B0067C80D /* Connection.swift */; };
@@ -58,7 +59,6 @@
 		8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */; };
 		8EBD62DB22D4E67E009F6FB1 /* ViewControllerB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD62DA22D4E67E009F6FB1 /* ViewControllerB.swift */; };
 		8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */; };
-		8EBD62E022D4E680009F6FB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */; };
 		8EBD62E322D4E680009F6FB1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8EBD62E122D4E680009F6FB1 /* LaunchScreen.storyboard */; };
 		8ECDA10123870B3E00D1F8B8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECDA10023870B3E00D1F8B8 /* ViewController.swift */; };
 		8ED572A022DE060600FB2AD4 /* RBGA_struc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED5729F22DE060600FB2AD4 /* RBGA_struc.swift */; };
@@ -67,6 +67,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E0ACF9F247EBE6F00C3D69F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E3795922312F2E1002B9C76 /* PhaseI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhaseI-Bridging-Header.h"; sourceTree = "<group>"; };
 		8E52DB77245832870067C80D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8E52DBC9245864730067C80D /* VerbalCorrections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerbalCorrections.swift; sourceTree = "<group>"; };
@@ -123,7 +124,6 @@
 		8EBD62D822D4E67E009F6FB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8EBD62DA22D4E67E009F6FB1 /* ViewControllerB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerB.swift; sourceTree = "<group>"; };
 		8EBD62DD22D4E67E009F6FB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8EBD62E222D4E680009F6FB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8EBD62E422D4E680009F6FB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8ECDA10023870B3E00D1F8B8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -264,6 +264,7 @@
 		8EBD62D722D4E67E009F6FB1 /* PhaseI */ = {
 			isa = PBXGroup;
 			children = (
+				8E0ACF9F247EBE6F00C3D69F /* Assets.xcassets */,
 				8E52DBDF2458659F0067C80D /* Upsurge */,
 				8E52DBD8245864FE0067C80D /* models */,
 				8E52DBCD2458647B0067C80D /* Detection */,
@@ -274,7 +275,6 @@
 				8E7A4192245AF862002225D5 /* fonts */,
 				8EEA33B923880C03009B3222 /* UnusedFiles */,
 				8EBD62DC22D4E67E009F6FB1 /* Main.storyboard */,
-				8EBD62DF22D4E680009F6FB1 /* Assets.xcassets */,
 				8EBD62E122D4E680009F6FB1 /* LaunchScreen.storyboard */,
 				8EBD62E422D4E680009F6FB1 /* Info.plist */,
 			);
@@ -355,8 +355,8 @@
 				8E52DC1F24586C330067C80D /* LICENSE.txt in Resources */,
 				8E6ED8A8246EDC8B00394604 /* CocoImage.png in Resources */,
 				8EBD62E322D4E680009F6FB1 /* LaunchScreen.storyboard in Resources */,
-				8EBD62E022D4E680009F6FB1 /* Assets.xcassets in Resources */,
 				8EBD62DE22D4E67E009F6FB1 /* Main.storyboard in Resources */,
+				8E0ACFA0247EBE6F00C3D69F /* Assets.xcassets in Resources */,
 				8E7A4191245AF821002225D5 /* selima.otf in Resources */,
 				8E7A418F245AF7E9002225D5 /* selima.ttf in Resources */,
 			);

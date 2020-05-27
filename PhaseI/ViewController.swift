@@ -7,6 +7,7 @@
 //
 
 // TODO: Check Verbal output of left/right/stance smaller
+// TODO: The end check is still broken
 
 import UIKit
 import AVKit
@@ -24,7 +25,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var selectedPose = Int()
     let captureSession = AVCaptureSession() // set up camera capture
     var previewLayer = AVCaptureVideoPreviewLayer() // camera image layer
-    let button = UIButton(frame: CGRect(x: 300, y: 200, width: 300, height: 70)) // button for hoem screen
+    let button = UIButton(frame: CGRect(x: 300, y: 200, width: 300, height: 70)) // button for home screen
+    var restartButton = UIButton(frame: CGRect(x: 20, y: 805, width: 70, height: 70))
     var isPoseCorrect = false //command for ending verbal correction
 
     //MARK: - Class Names
@@ -125,7 +127,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     // skeletal joint view setup in the top right corner of camera view
     fileprivate func setupCorrectJointView(){
         self.view.addSubview(correctJointView)
-//        correctJointView.backgroundColor = UIColor.red.withAlphaComponent(0.6)
         correctJointView.frame = CGRect(x: 280 , y: 135, width: 150, height: 150)
     }
     
@@ -167,6 +168,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureSession.startRunning()
         moveIdentifierConfidenceLabel()
     }
+    
     // app reset for a new pose correction and start correction mode
     func reset(){
         coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
@@ -175,6 +177,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.previewLayer.isHidden = false
         self.jointViews.isHidden = false
         self.correctJointView.isHidden = false
+        self.restartButton.isHidden = false
         self.imageView.removeFromSuperview()
         self.view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
     }
@@ -184,15 +187,25 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         self.previewLayer.isHidden = true
         self.jointViews.isHidden = true
         self.correctJointView.isHidden = true
+        self.restartButton.isHidden = true
         self.setupButtonView()
         self.setupBackground()
         self.setupIdentifierConfidenceLabel()
     }
     
-    // move to starting screen
-    func restart(){
-        
+//     move to starting screen
+    fileprivate func setupRestartButton(){
+        self.view.addSubview(restartButton)
+        restartButton.setImage(UIImage(named: "RestartButton"), for: .normal)
+        restartButton.addTarget(self, action: #selector(restartAction), for: .touchUpInside)
     }
+    
+    @objc func restartAction(sender: UIButton!){
+        // starting screen setup
+        self.stopSession()
+        isPoseCorrect = true
+    }
+    
     
     // MARK: - Skeletal Rendering
     func drawLine(_ mm: Array<Double>) {
@@ -466,6 +479,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         DispatchQueue.main.async {
             self.identifierLabel.removeFromSuperview()
             self.setupInital()
+            
         }
     }
     
@@ -474,6 +488,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         cameraSetup()
         setupJointView()
         setupCorrectJointView()
+        setupRestartButton()
         setupInital() // start of app, camera view is hidden
     }
     
