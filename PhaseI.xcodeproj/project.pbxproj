@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8E0ACFA0247EBE6F00C3D69F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E0ACF9F247EBE6F00C3D69F /* Assets.xcassets */; };
+		8E0ACFA2247FBBF600C3D69F /* WarriorIICorrection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0ACFA1247FBBF600C3D69F /* WarriorIICorrection.swift */; };
 		8E52DBCB245864730067C80D /* VerbalCorrections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBC9245864730067C80D /* VerbalCorrections.swift */; };
 		8E52DBCC245864730067C80D /* CorrectAngles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCA245864730067C80D /* CorrectAngles.swift */; };
 		8E52DBD32458647B0067C80D /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E52DBCE2458647B0067C80D /* Connection.swift */; };
@@ -68,6 +69,7 @@
 
 /* Begin PBXFileReference section */
 		8E0ACF9F247EBE6F00C3D69F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8E0ACFA1247FBBF600C3D69F /* WarriorIICorrection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarriorIICorrection.swift; sourceTree = "<group>"; };
 		8E3795922312F2E1002B9C76 /* PhaseI-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PhaseI-Bridging-Header.h"; sourceTree = "<group>"; };
 		8E52DB77245832870067C80D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8E52DBC9245864730067C80D /* VerbalCorrections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerbalCorrections.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				8ED572A722DE15DB00FB2AD4 /* PixelMod.swift */,
 				8E7A418A2459C119002225D5 /* CNN.swift */,
 				8E6ED8A7246EDC8B00394604 /* CocoImage.png */,
+				8E0ACFA1247FBBF600C3D69F /* WarriorIICorrection.swift */,
 			);
 			path = UnusedFiles;
 			sourceTree = "<group>";
@@ -405,6 +408,7 @@
 				8E52DC0B245865A00067C80D /* Real.swift in Sources */,
 				8E52DC09245865A00067C80D /* MatrixSlice.swift in Sources */,
 				8ECDA10123870B3E00D1F8B8 /* ViewController.swift in Sources */,
+				8E0ACFA2247FBBF600C3D69F /* WarriorIICorrection.swift in Sources */,
 				8E52DBD32458647B0067C80D /* Connection.swift in Sources */,
 				8EBD62D922D4E67E009F6FB1 /* AppDelegate.swift in Sources */,
 				8E52DC17245865A00067C80D /* Matrix.swift in Sources */,

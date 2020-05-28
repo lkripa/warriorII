@@ -7,7 +7,6 @@
 //
 
 // TODO: Check Verbal output of left/right/stance smaller
-// TODO: The end check is still broken
 
 import UIKit
 import AVKit
@@ -71,7 +70,20 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
     }
     
-    //MARK: - Capture Session
+    // MARK: App Reset (to start correction mode)
+    func reset(){
+        coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
+        poseChecker = Array(repeating: "", count: 3)
+        
+        self.previewLayer.isHidden = false
+        self.jointViews.isHidden = false
+        self.correctJointView.isHidden = false
+        self.restartButton.isHidden = false
+        self.imageView.removeFromSuperview()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
+    }
+    
+    //MARK: - Start Capture Session
     func cameraSetup() {
         captureSession.sessionPreset = .photo
         captureSession.sessionPreset = .vga640x480
@@ -91,7 +103,25 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureSession.addOutput(dataOutput)
     }
     
-    // MARK: - Setups
+    // MARK: - Stop Capture Session
+    // stop camera session and reset view to button selection
+    func stopSession() {
+        if captureSession.isRunning {
+            DispatchQueue.global().async {
+                self.captureSession.stopRunning()
+            }
+        }
+        
+        // starting screen setup
+        DispatchQueue.main.async {
+            print("reset happened")
+            self.identifierLabel.removeFromSuperview()
+            self.setupInital()
+            
+        }
+    }
+    
+    // MARK: - View Setups
     
     // label on the top of screen view during start
     fileprivate func setupIdentifierConfidenceLabel() {
@@ -139,6 +169,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
     }
     
+    // starting screen: camera view is hidden and intro background is setup
+    func setupInital(){
+        self.previewLayer.isHidden = true
+        self.jointViews.isHidden = true
+        self.correctJointView.isHidden = true
+        self.restartButton.isHidden = true
+        self.setupButtonView()
+        self.setupBackground()
+        self.setupIdentifierConfidenceLabel()
+    }
+    
     // button view setup
     fileprivate func setupButtonView(){
         self.view.addSubview(button)
@@ -168,32 +209,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureSession.startRunning()
         moveIdentifierConfidenceLabel()
     }
-    
-    // app reset for a new pose correction and start correction mode
-    func reset(){
-        coor = [Double](repeating: Double.nan, count: (17)) // check if array is empty
-        poseChecker = Array(repeating: "", count: 3)
-        
-        self.previewLayer.isHidden = false
-        self.jointViews.isHidden = false
-        self.correctJointView.isHidden = false
-        self.restartButton.isHidden = false
-        self.imageView.removeFromSuperview()
-        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "peachLines.png")!)
-    }
-    
-    // starting screen: camera view is hidden and intro background is setup
-    func setupInital(){
-        self.previewLayer.isHidden = true
-        self.jointViews.isHidden = true
-        self.correctJointView.isHidden = true
-        self.restartButton.isHidden = true
-        self.setupButtonView()
-        self.setupBackground()
-        self.setupIdentifierConfidenceLabel()
-    }
-    
-//     move to starting screen
+
+    // move to starting screen
     fileprivate func setupRestartButton(){
         self.view.addSubview(restartButton)
         restartButton.setImage(UIImage(named: "RestartButton"), for: .normal)
@@ -206,7 +223,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         isPoseCorrect = true
     }
     
-    
     // MARK: - Skeletal Rendering
     func drawLine(_ mm: Array<Double>) {
         DispatchQueue.main.async {
@@ -215,7 +231,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // var startTime = CFAbsoluteTimeGetCurrent()
         var (keypoint, pos, testing) = drawingBody(mm)
         coor = testing
-        print(keypoint, pos)
+        // print("keypoints: \(keypoint), coordinates: \(pos)") // to get coordinates for correct skeletal rendering
         let opencv = OpenCVWrapper()
         let renderedImage = opencv.renderKeyPoint(CGRect(x: -60 , y: 171, width: 368, height: 368),
                                                   keypoint: &keypoint,
@@ -230,7 +246,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // print("Elapsed time is for rendering is \(timeElapsed) seconds.")
     }
     
-    // MARK: - Skeletal Rendering
+    // MARK: - Correct Skeletal Rendering in Top Corner
     func drawCorrectSkeleton() {
         let opencv = OpenCVWrapper()
         var keypoint = [Int32]()
@@ -349,34 +365,49 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
     } // End of visionRequestxgboost
     
-// MARK: - Verbal Correction
+    // MARK: - Wrong Joint Angles
+    func findWrongJoints() -> ([Int:Double], Int){
+        // find the joints within the threshold difference of 15 degrees
+        var numberOfNaN = 0 // check for number of NaN values
+        var dict = [Int:Double]()
+        for i in 1...12 {
+            let present = coor[i]
+            if present.isNaN {
+                numberOfNaN += 1
+            }
+            let past = (correctPose[selectedPose])[i]
+            let threshold = Double(15)
+            if present - past > threshold {
+                dict.updateValue(present - past, forKey: i)
+                
+            } else if past - present > threshold {
+                dict.updateValue(present - past, forKey: i)
+            }
+        }
+        print("Number of NaN: \(numberOfNaN)")
+        return (dict, numberOfNaN)
+    }
+    
+    // MARK: - Verbal Correction
     func verbalCorrection(pose:String) {
         // var startTime = CFAbsoluteTimeGetCurrent()
         if isPoseCorrect == false {
             if pose == classNames[selectedPose] {
-                var dict = [Int:Double]()
-                for i in 1...12 {
-                    let present = coor[i]
-                    let past = (correctPose[selectedPose])[i]
-                    let threshold = Double(15)
-                    if present - past > threshold {
-                        dict.updateValue(present - past, forKey: i)
-                        
-                    } else if past - present > threshold {
-                        dict.updateValue(present - past, forKey: i)
-                    }
-                }
+                // find the joints within the threshold difference of 15 degrees
+                let (dict, numberOfNaN) = findWrongJoints()
                 
-                // if there are no errors larger than 15 degrees, it is in perfect form
-                if dict.isEmpty {
+                // if there are no errors larger than 15 degrees and there are enough joints detected, it is in perfect form
+                if dict.isEmpty && numberOfNaN <= 6 {
                     // check if talking, and pose is in perfect form and verbal command is spoken for the correction to stop
                     if self.synth.isSpeaking == false {
                         isPoseCorrect = true
                         speak("Your \(classNames[selectedPose]) is in perfect form.")
                         print("Your \(classNames[selectedPose]) is in perfect form.")
                     }
+                } else if dict.isEmpty && numberOfNaN > 6 {
+                    print("No errors found in the few detected joints")
                 } else {
-                    // find the biggest error in the joint angles and say correction
+                    // find the biggest error in the joint angles and say verbal correction
                     for i in 0...16 {
                         var largest_angle = dict.values.max()!
                         
@@ -402,54 +433,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         } else { continue }
                     }
                 }
-                print(dict)
+                print("dict: \(dict)")
                 }
         } else {
             stopSession()
         }
-            
-// MARK: - Only WARRIOR 2 Correction
-        
-//        if pose == classNames[7]{
-//            var dict = [Int:Double]()
-//            for i in 1...12 {
-//                let present = coor[i]
-//                let past = correctWarrior2[i]
-//                let threshold = Double(15)
-//                if present - past > threshold {
-//                    dict.updateValue(present - past, forKey: i)}
-//                else if past - present > threshold {
-//                    dict.updateValue(present - past, forKey: i)}
-//            }
-//            if dict.isEmpty{
-//                speak("Your \(classNames[7]) is in perfect form.")}
-//            else {
-//                for i in 0...16 {
-//                    var largest_angle = dict.values.max()!
-//
-//                    if largest_angle < (dict.values.min()! / -1.0) {
-//                        largest_angle = (dict.values.min()!)}
-//
-//                    if dict[i] == largest_angle {
-//                        if largest_angle.sign == .minus {
-//                            if previousJoint != verbalNegWarrior2[i] {
-//                                speak(previousJoint)}
-//                            previousJoint = verbalNegWarrior2[i]
-//                            print(previousJoint)
-//                        } else if largest_angle.sign == .plus {
-//                            if previousJoint != verbalPosWarrior2[i] {
-//                                speak(previousJoint)}
-//                            previousJoint = verbalPosWarrior2[i]
-//                            print(previousJoint)
-//                        }
-//
-//                    } else { continue }
-//                }
-//            }
-//            print(dict)
-//                 // let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-//                // print("Elapsed time for Verbal Correction is \(timeElapsed) seconds.")
-//        }
     } // End of Verbal func
     
 // MARK: - Pose Estimator Model
@@ -467,22 +455,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     }
     
-    // stop camera session and reset view to button selection
-    func stopSession() {
-        if captureSession.isRunning {
-            DispatchQueue.global().async {
-                self.captureSession.stopRunning()
-            }
-        }
-        
-        // starting screen setup
-        DispatchQueue.main.async {
-            self.identifierLabel.removeFromSuperview()
-            self.setupInital()
-            
-        }
-    }
-    
+    // MARK: - viewDidLoad()
     override func viewDidLoad() {
         super.viewDidLoad()
         cameraSetup()
