@@ -27,7 +27,8 @@ $ pod install
 Download mlmodels for pose estimation and classification.
 
 ## Examples
-
+A video can be found on:
+https://lkripa.com/#myWork
 
 ## Reference
 
